@@ -1,105 +1,100 @@
 # PROJECT REQUIREMENT DESIGN (PRD)
 
-## Sistem Pelaporan dan Penanganan Kendala Aplikasi
+## Sistem Pelaporan dan Penanganan Kendala Aplikasi (SIPENA)
 
-**Versi:** 1.1
-**Jenis:** Mini Project Pembelajaran Junior Developer  
-**Framework:** Laravel 12  
+**Versi:** 1.2
+**Jenis:** Mini Project Pembelajaran Junior Developer
+**Acuan utama:** Modul Mini Project Junior Developer KPK
+**Framework:** Laravel 12
 **Bahasa antarmuka:** Bahasa Indonesia
 
 ---
 
 ## 1. Ringkasan Proyek
 
-Sistem Pelaporan dan Penanganan Kendala Aplikasi adalah aplikasi web untuk mencatat, memantau, dan menyelesaikan laporan kendala aplikasi. Pengguna biasa bertindak sebagai pelapor, sedangkan developer bertugas memeriksa, memproses, dan mendokumentasikan penyelesaian laporan.
+SIPENA adalah aplikasi web untuk mencatat, mengelompokkan, menindaklanjuti, dan mendokumentasikan laporan kendala pada aplikasi internal.
 
-Proyek ini dibuat untuk melatih kompetensi Junior Developer, meliputi analisis kebutuhan, pemrograman, basis data, debugging, testing, dokumentasi teknis, Git, dan presentasi hasil.
+Pelapor membuat dan memantau tiket miliknya. Developer memeriksa seluruh tiket, menentukan prioritas dan PIC, melakukan analisis, mengubah status, menulis solusi, serta memantau riwayat penanganan. Pelapor mengonfirmasi penyelesaian setelah developer menyatakan tiket menunggu konfirmasi.
 
-Aplikasi tidak ditujukan sebagai sistem produksi skala besar. Fokus utama adalah kejelasan alur, penggunaan Laravel standar, kualitas dasar kode, dan keterlacakan proses pengembangan.
+Proyek ini merupakan latihan terstruktur Junior Developer yang mencakup SDLC, Laravel MVC, basis data relasional, Git workflow, debugging, testing, dokumentasi, dan presentasi.
+
+PRD ini menerjemahkan modul latihan menjadi spesifikasi implementasi. Jika ditemukan perbedaan konsep, modul latihan menjadi acuan dan perubahan wajib dicatat pada riwayat PRD.
 
 ---
 
-## 2. Tujuan Proyek
+## 2. Tujuan
 
-### 2.1 Tujuan Utama
+### 2.1 Tujuan Sistem
 
-Membangun aplikasi pelaporan kendala yang memungkinkan:
-
-1. Pelapor membuat dan memantau laporan kendala.
-2. Developer memeriksa dan menangani laporan.
-3. Sistem menyimpan status, prioritas, komentar, analisis, solusi, dan riwayat perubahan.
-4. Seluruh proses dapat diuji dan didokumentasikan.
+- Menyediakan media pelaporan kendala aplikasi yang terstruktur.
+- Membantu developer mengelola prioritas, PIC, dan status tiket.
+- Menyimpan analisis, solusi, komentar, lampiran, dan riwayat status.
+- Membatasi akses sesuai role dan kepemilikan tiket.
+- Menyediakan ringkasan operasional melalui dashboard.
 
 ### 2.2 Tujuan Pembelajaran
 
-Developer diharapkan mampu:
-
-- memahami requirement sederhana;
-- membuat aplikasi dengan struktur MVC;
-- membuat database relasional;
-- menerapkan validasi dan otorisasi;
-- menggunakan Git workflow;
-- melakukan debugging berdasarkan log dan pesan error;
-- membuat pengujian manual dan otomatis;
-- membuat dokumentasi teknis;
-- mempresentasikan hasil pengembangan.
+- Membaca dan menerjemahkan requirement.
+- Menggunakan MVC standar Laravel.
+- Merancang migration, relasi, seeder, dan factory.
+- Menerapkan validasi, middleware, dan policy.
+- Mengelola workflow status dalam transaction.
+- Melakukan debugging berdasarkan bukti.
+- Membuat testing manual dan otomatis.
+- Menggunakan branch, commit, dan pull request.
+- Menulis dokumentasi dan mempresentasikan hasil.
 
 ---
 
 ## 3. Ruang Lingkup
 
-### 3.1 Fitur yang Harus Dibuat
+### 3.1 Fitur Wajib
 
-- Registrasi.
-- Login dan logout.
+- Registrasi, login, logout, dan fitur akun Laravel Breeze.
+- Role `reporter` dan `developer`.
+- Master aplikasi internal.
+- Pembuatan dan pengelolaan tiket kendala.
+- Nomor tiket otomatis.
+- Daftar dan detail tiket.
+- Akses tiket berdasarkan role dan kepemilikan.
+- Penetapan prioritas dan PIC developer.
+- Workflow status yang tervalidasi.
+- Catatan analisis dan solusi.
+- Komentar.
+- Riwayat perubahan status.
+- Satu lampiran opsional per tiket.
+- Pencarian, filter, dan pagination.
+- Dashboard ringkas.
+- Testing manual dan otomatis.
+- Simulasi debugging.
+- Dokumentasi teknis dan presentasi.
+
+### 3.2 Fitur Akun Breeze yang Dipertahankan
+
 - Verifikasi email.
 - Lupa dan reset password.
 - Perubahan password.
 - Pengelolaan profil.
 - Penghapusan akun dalam kondisi yang diizinkan.
-- Role pelapor dan developer.
-- Dashboard pelapor.
-- Dashboard developer.
-- Pembuatan laporan kendala.
-- Daftar laporan milik pelapor.
-- Daftar seluruh laporan untuk developer.
-- Detail laporan.
-- Edit dan hapus laporan dalam kondisi tertentu.
-- Pencarian dan filter laporan.
-- Pengubahan prioritas.
-- Pengubahan status.
-- Catatan analisis developer.
-- Solusi penyelesaian.
-- Komentar.
-- Riwayat perubahan status.
-- Upload satu gambar lampiran.
-- Penutupan laporan.
-- Testing manual.
-- Laravel Feature Test.
-- Dokumentasi proyek.
 
-### 3.2 Fitur yang Tidak Termasuk
+Email verifikasi dan reset password adalah bagian autentikasi, bukan notifikasi bisnis tiket.
 
-AI coding assistant tidak boleh menambahkan fitur berikut tanpa instruksi eksplisit:
+### 3.3 Di Luar Scope
 
 - aplikasi mobile;
 - REST API publik;
-- notifikasi bisnis laporan melalui email atau WhatsApp;
+- notifikasi bisnis email atau WhatsApp;
 - integrasi pihak ketiga;
-- real-time chat;
-- WebSocket;
+- real-time chat atau WebSocket;
 - multi-tenant;
 - pembayaran;
 - dashboard chart kompleks;
 - multiple attachment;
-- Filament;
-- Livewire;
-- DTO;
-- repository pattern;
-- microservices;
-- event sourcing;
-- package role dan permission;
-- package activity log.
+- role `admin` atau `coordinator` terpisah;
+- Filament atau Livewire;
+- package role/permission;
+- package activity log;
+- DTO, repository pattern, microservices, atau event sourcing.
 
 ---
 
@@ -110,9 +105,8 @@ AI coding assistant tidak boleh menambahkan fitur berikut tanpa instruksi ekspli
 - PHP 8.3
 - Laravel 12
 - Eloquent ORM
-- Laravel Validation
-- Laravel Middleware
-- Laravel Policy
+- Laravel Validation dan Form Request
+- Laravel Middleware dan Policy
 - PHPUnit / Laravel Feature Test
 
 ### Frontend
@@ -120,116 +114,91 @@ AI coding assistant tidak boleh menambahkan fitur berikut tanpa instruksi ekspli
 - Blade
 - HTML5
 - Tailwind CSS
+- Alpine.js bawaan Breeze
 - JavaScript dasar
 - Vite
 
-### Database
+### Database dan Tools
 
-- MySQL 8 atau MariaDB yang kompatibel
-- Laravel Migration
-- Seeder
-- Factory
-
-### Tools
-
+- MySQL 8 atau MariaDB kompatibel
+- Laravel Migration, Seeder, dan Factory
 - Laragon
-- Visual Studio Code
 - Composer
-- Node.js dan NPM
-- Git
-- GitHub
-- phpMyAdmin atau database client lain
+- Node.js dan npm
+- Git dan GitHub
 
 ---
 
 ## 5. Prinsip Pengembangan
 
-AI coding assistant wajib mengikuti prinsip berikut:
-
-1. Gunakan fitur bawaan Laravel selama masih mencukupi.
-2. Gunakan MVC standar.
-3. Gunakan Form Request untuk validasi.
-4. Gunakan Policy untuk otorisasi data.
-5. Gunakan enum PHP untuk role, status, dan prioritas.
-6. Gunakan named route.
-7. Gunakan route model binding.
-8. Gunakan eager loading untuk mencegah N+1 query.
-9. Gunakan database transaction untuk proses perubahan status.
-10. Jangan menulis query di Blade.
-11. Jangan menaruh business logic panjang di route.
-12. Controller harus singkat dan mudah dibaca.
-13. Nama class, method, variable, tabel, dan route menggunakan bahasa Inggris.
+1. Gunakan fitur bawaan Laravel selama mencukupi.
+2. Gunakan MVC standar dan hindari overengineering.
+3. Gunakan Form Request untuk validasi fitur domain.
+4. Gunakan Policy untuk akses data.
+5. Gunakan middleware untuk area berdasarkan role.
+6. Gunakan PHP enum untuk role, status, prioritas, dan kategori.
+7. Gunakan named route dan route model binding.
+8. Gunakan eager loading untuk mencegah N+1.
+9. Gunakan transaction untuk perubahan status dan history.
+10. Jangan menulis query atau business logic di Blade.
+11. Controller harus singkat dan mudah dibaca.
+12. Service hanya digunakan untuk workflow status.
+13. Penamaan kode dan database menggunakan Bahasa Inggris.
 14. Teks antarmuka menggunakan Bahasa Indonesia.
-15. Hindari overengineering.
-16. Jangan menambahkan package tanpa alasan dan persetujuan.
-17. Setiap fitur penting harus memiliki pengujian.
-18. PRD adalah sumber aturan utama proyek.
+15. Semua akses tidak sah harus diperiksa di backend.
+16. Setiap fitur penting memiliki test berhasil dan gagal.
+17. Jangan menambah package tanpa persetujuan.
+18. PRD adalah spesifikasi implementasi dan modul latihan adalah acuan konsep.
 
 ---
 
-## 6. Aktor Sistem
+## 6. Aktor dan Hak Akses
 
-### 6.1 Pelapor
+### 6.1 Reporter
 
-Pelapor dapat:
+Reporter dapat:
 
-- registrasi;
-- login dan logout;
+- registrasi, login, dan logout;
+- mengelola akun;
 - melihat dashboard pribadi;
-- membuat laporan;
-- melihat laporan miliknya;
-- melihat detail laporan;
-- mengubah laporan yang masih `submitted`;
-- menghapus laporan yang masih `submitted`;
-- menambahkan komentar;
-- menutup laporan yang sudah `resolved`.
+- membuat tiket;
+- melihat tiket miliknya;
+- mengubah atau menghapus tiket miliknya yang masih `new`;
+- menambahkan komentar pada tiket miliknya;
+- mengonfirmasi penyelesaian tiket dari `waiting_confirmation` menjadi `resolved`.
 
-Pelapor tidak dapat:
+Reporter tidak dapat:
 
-- melihat laporan pengguna lain;
+- melihat tiket reporter lain;
+- mengakses area developer;
+- menetapkan PIC;
 - mengubah prioritas;
-- mengubah status penanganan;
-- menulis analisis developer;
-- menulis solusi;
-- mengakses halaman developer.
+- menulis analisis atau solusi;
+- menjalankan workflow status developer.
 
 ### 6.2 Developer
 
 Developer dapat:
 
-- melihat semua laporan;
-- mencari dan memfilter laporan;
-- melihat detail laporan;
-- menetapkan prioritas;
-- mengubah status;
-- menulis catatan analisis;
-- menulis solusi;
+- melihat seluruh tiket;
+- mencari dan memfilter tiket;
+- melihat dashboard operasional;
+- menetapkan PIC developer;
+- mengubah prioritas;
+- menulis analisis dan solusi;
+- mengubah status sesuai transition map;
 - menambahkan komentar;
-- melihat riwayat status;
-- membuka kembali laporan `resolved`;
-- menutup laporan yang telah selesai.
+- melihat riwayat status.
 
-Developer tidak memiliki fitur hapus laporan melalui antarmuka utama.
+Developer tidak memiliki fitur hapus tiket melalui antarmuka utama dan tidak melakukan konfirmasi akhir `waiting_confirmation → resolved`.
 
-### 6.3 Fitur Akun Bersama
+### 6.3 Perspektif Koordinator
 
-Reporter dan developer dapat:
-
-- memperbarui nama dan email pada profil;
-- mengubah password;
-- meminta reset password;
-- menggunakan verifikasi email bawaan Laravel Breeze;
-- menghapus akun jika belum memiliki relasi dengan data laporan, komentar, atau riwayat status.
-
-Email untuk reset password dan verifikasi email merupakan bagian dari autentikasi bawaan Laravel Breeze, bukan notifikasi bisnis laporan.
-
-Penghapusan akun wajib ditolak dengan pesan yang jelas jika akun telah memiliki laporan, komentar, atau riwayat status. Aturan ini menjaga integritas data dan mengikuti foreign key `restrict`.
+User story koordinator pada modul dipenuhi oleh dashboard developer. Versi pertama tidak menambahkan role `coordinator` atau `admin`.
 
 ---
 
 ## 7. Role Pengguna
-
-Role yang tersedia:
 
 ```text
 reporter
@@ -238,69 +207,72 @@ developer
 
 Ketentuan:
 
-- Role disimpan pada kolom `role` di tabel `users`.
-- Default registrasi adalah `reporter`.
-- Role `developer` hanya dibuat melalui seeder atau pengaturan langsung oleh administrator.
-- Tidak menggunakan package role dan permission.
+- role disimpan di `users.role`;
+- registrasi selalu menghasilkan `reporter`;
+- request registrasi tidak boleh menentukan role;
+- developer hanya dibuat melalui seeder atau pengaturan terkontrol;
+- tidak menggunakan package permission.
 
 ---
 
-## 8. Status Laporan
+## 8. Istilah Domain
 
-Status yang tersedia:
+Istilah utama dalam kode mengikuti modul:
 
 ```text
-submitted
-reviewed
+Ticket      = laporan kendala
+Application = aplikasi internal yang terdampak
+Assignee    = developer/PIC
+```
+
+Antarmuka boleh menggunakan kata “Laporan”, tetapi nama class, tabel, route, dan test menggunakan `Ticket`.
+
+---
+
+## 9. Status Tiket
+
+```text
+new
+analyzed
 in_progress
+waiting_confirmation
 resolved
-closed
 rejected
 ```
 
-### Definisi
+Definisi:
 
-- `submitted`: laporan baru dibuat.
-- `reviewed`: laporan telah diperiksa.
-- `in_progress`: laporan sedang ditangani.
-- `resolved`: solusi telah diberikan.
-- `closed`: laporan ditutup.
-- `rejected`: laporan ditolak.
+- `new`: tiket baru dibuat.
+- `analyzed`: developer telah memeriksa tiket.
+- `in_progress`: tiket sedang ditangani.
+- `waiting_confirmation`: developer telah memberi solusi dan menunggu konfirmasi reporter.
+- `resolved`: reporter mengonfirmasi kendala selesai.
+- `rejected`: tiket ditolak.
 
-### Alur Normal
+Transition map:
 
-```text
-submitted → reviewed → in_progress → resolved → closed
+```php
+new => [analyzed, rejected]
+analyzed => [in_progress, rejected]
+in_progress => [waiting_confirmation, rejected]
+waiting_confirmation => [in_progress, resolved]
+resolved => []
+rejected => []
 ```
 
-### Alur Penolakan
+Aturan:
 
-```text
-submitted → rejected
-reviewed → rejected
-```
-
-### Membuka Kembali
-
-```text
-resolved → in_progress
-```
-
-### Aturan
-
-1. Laporan baru selalu `submitted`.
-2. Hanya developer yang dapat mengubah status penanganan.
-3. Status `resolved` wajib memiliki solusi.
-4. Reporter dapat mengubah `resolved` menjadi `closed` untuk laporan miliknya.
-5. Developer dapat menutup laporan yang sudah `resolved`.
-6. Laporan `closed` tidak dapat diedit.
-7. Laporan `rejected` tidak dapat diproses kembali pada versi awal.
+1. Tiket baru selalu `new`.
+2. Developer menangani transisi hingga `waiting_confirmation`.
+3. `waiting_confirmation` harus memiliki solusi.
+4. Hanya reporter pemilik yang mengubah `waiting_confirmation` menjadi `resolved`.
+5. Developer dapat membuka kembali `waiting_confirmation` menjadi `in_progress`.
+6. `resolved` dan `rejected` merupakan status akhir versi pertama.
+7. Transisi ilegal wajib ditolak di backend.
 
 ---
 
-## 9. Prioritas
-
-Prioritas yang tersedia:
+## 10. Prioritas
 
 ```text
 low
@@ -309,692 +281,567 @@ high
 critical
 ```
 
-Default laporan baru adalah `medium`.
+- default tiket baru adalah `medium`;
+- hanya developer yang dapat mengubah prioritas;
+- `critical` menunjukkan gangguan paling serius.
 
-- `low`: tidak mengganggu fungsi utama.
-- `medium`: mengganggu sebagian fungsi.
-- `high`: mengganggu fungsi penting.
-- `critical`: menyebabkan gangguan serius atau sistem tidak dapat digunakan.
+Contoh validasi pembuatan tiket pada modul mencantumkan input `priority`. Untuk menjaga konsistensi dengan tabel hak akses dan FR-05 pada modul, aturan bisnis yang digunakan adalah priority awal `medium` dari sistem dan perubahan priority hanya oleh developer.
 
-Hanya developer yang dapat mengubah prioritas.
-
----
-
-## 10. Kategori Laporan
-
-Kategori awal:
-
-- Bug
-- Permasalahan Akses
-- Permasalahan Data
-- Permasalahan Tampilan
-- Permasalahan Performa
-- Lainnya
-
-Kategori dibuat melalui seeder. Tidak perlu halaman CRUD kategori pada versi awal.
+Pengurutan critical di posisi teratas merupakan simulasi perubahan kebutuhan setelah versi awal, bukan aturan urutan MVP.
 
 ---
 
-## 11. Studi Kasus Utama
+## 11. Kategori
 
-Seorang pegawai menggunakan aplikasi internal untuk memasukkan data pengguna. Ketika tombol simpan ditekan, sistem menampilkan error dan data tidak tersimpan.
+Kategori disimpan sebagai string pada `tickets.category` dan direpresentasikan dengan `TicketCategory`:
 
-Pelapor membuat laporan dengan informasi:
+```text
+bug
+access
+data
+display
+other
+```
 
-- judul masalah;
-- kategori;
-- halaman terkait;
-- deskripsi;
-- langkah reproduksi;
-- hasil aktual;
-- hasil yang diharapkan;
-- dampak;
-- browser atau perangkat;
-- gambar lampiran opsional.
-
-Developer kemudian:
-
-1. Memeriksa laporan.
-2. Menetapkan prioritas.
-3. Mengubah status menjadi `reviewed`.
-4. Melakukan analisis.
-5. Mengubah status menjadi `in_progress`.
-6. Memperbaiki masalah.
-7. Melakukan testing.
-8. Menulis solusi.
-9. Mengubah status menjadi `resolved`.
-10. Pelapor memeriksa dan menutup laporan.
+Tidak membuat tabel atau CRUD kategori pada versi pertama.
 
 ---
 
-## 12. User Story
+## 12. Master Aplikasi
 
-### Pelapor
+Tabel `applications` menyimpan aplikasi internal yang dapat dilaporkan.
 
-- Sebagai pengguna baru, saya ingin registrasi agar dapat membuat laporan.
-- Sebagai pengguna, saya ingin login agar dapat mengakses laporan saya.
-- Sebagai pelapor, saya ingin membuat laporan kendala agar developer dapat menanganinya.
-- Sebagai pelapor, saya ingin melihat daftar laporan saya agar dapat memantau progres.
-- Sebagai pelapor, saya ingin melihat detail laporan agar mengetahui status dan solusi.
-- Sebagai pelapor, saya ingin mengubah laporan yang belum diproses.
-- Sebagai pelapor, saya ingin menghapus laporan yang dibuat secara keliru.
-- Sebagai pelapor, saya ingin menambahkan informasi melalui komentar.
-- Sebagai pelapor, saya ingin menutup laporan yang sudah selesai.
+Data seed:
 
-### Developer
+- Sistem Kepegawaian
+- Sistem Persuratan
+- Dashboard Monitoring
 
-- Sebagai developer, saya ingin melihat seluruh laporan.
-- Sebagai developer, saya ingin mencari dan memfilter laporan.
-- Sebagai developer, saya ingin menetapkan prioritas.
-- Sebagai developer, saya ingin mengubah status penanganan.
-- Sebagai developer, saya ingin mencatat hasil analisis.
-- Sebagai developer, saya ingin menulis solusi.
-- Sebagai developer, saya ingin melihat riwayat status.
+Tidak membuat halaman CRUD aplikasi pada versi pertama.
 
 ---
 
-## 13. Kebutuhan Fungsional
+## 13. User Story
+
+- Sebagai reporter, saya ingin membuat tiket agar kendala dapat ditindaklanjuti.
+- Sebagai reporter, saya ingin memantau tiket milik saya.
+- Sebagai reporter, saya ingin memberikan komentar tambahan.
+- Sebagai reporter, saya ingin mengonfirmasi bahwa kendala telah selesai.
+- Sebagai developer, saya ingin melihat seluruh tiket.
+- Sebagai developer, saya ingin menentukan prioritas dan PIC.
+- Sebagai developer, saya ingin memfilter tiket untuk menentukan pekerjaan berikutnya.
+- Sebagai developer, saya ingin mencatat analisis dan solusi.
+- Sebagai developer, saya ingin melihat riwayat perubahan.
+- Sebagai koordinator, saya ingin melihat ringkasan operasional melalui dashboard developer.
+
+---
+
+## 14. Kebutuhan Fungsional
 
 | ID | Kebutuhan |
 |---|---|
-| FR-01 | Sistem menyediakan registrasi, login, dan logout. |
-| FR-02 | Halaman internal hanya dapat diakses pengguna login. |
-| FR-03 | Sistem membedakan role reporter dan developer. |
-| FR-04 | Reporter dapat membuat laporan. |
-| FR-05 | Sistem membuat nomor laporan unik otomatis. |
-| FR-06 | Reporter hanya melihat laporan miliknya. |
-| FR-07 | Developer melihat seluruh laporan. |
-| FR-08 | Developer dapat mencari berdasarkan nomor, judul, atau pelapor. |
-| FR-09 | Developer dapat memfilter status, prioritas, kategori, dan tanggal. |
-| FR-10 | Reporter hanya dapat mengedit laporan submitted miliknya. |
-| FR-11 | Reporter hanya dapat menghapus laporan submitted miliknya. |
-| FR-12 | Developer mengubah status sesuai aturan transisi. |
-| FR-13 | Developer mengubah prioritas. |
-| FR-14 | Developer menyimpan catatan analisis. |
-| FR-15 | Developer menyimpan solusi. |
-| FR-16 | Reporter dan developer dapat berkomentar. |
-| FR-17 | Setiap perubahan status disimpan dalam riwayat. |
-| FR-18 | Laporan resolved dapat ditutup. |
-| FR-19 | Semua input divalidasi pada server. |
-| FR-20 | Daftar laporan menggunakan pagination. |
-| FR-21 | Pengguna dapat memperbarui profil dan password miliknya. |
-| FR-22 | Sistem menyediakan verifikasi email serta lupa dan reset password melalui fitur bawaan Laravel Breeze. |
-| FR-23 | Pengguna dapat menghapus akun jika belum memiliki relasi dengan laporan, komentar, atau riwayat status. |
-| FR-24 | Sistem menolak penghapusan akun yang masih memiliki relasi data dengan pesan yang jelas. |
+| FR-01 | Pengguna dapat registrasi, login, dan logout. |
+| FR-02 | Reporter dapat membuat tiket kendala. |
+| FR-03 | Reporter hanya dapat melihat tiket miliknya. |
+| FR-04 | Developer dapat melihat seluruh tiket. |
+| FR-05 | Developer dapat menetapkan prioritas dan PIC. |
+| FR-06 | Developer dapat mengubah status sesuai transition map. |
+| FR-07 | Pengguna dapat berkomentar pada tiket yang boleh diakses. |
+| FR-08 | Sistem menyimpan riwayat perubahan status. |
+| FR-09 | Developer dapat mengisi analisis dan solusi. |
+| FR-10 | Tiket dapat dicari, difilter, dan dipaginasi. |
+| FR-11 | Dashboard menampilkan ringkasan tiket. |
+| FR-12 | Reporter dapat mengonfirmasi penyelesaian. |
+| FR-13 | Sistem membuat nomor tiket unik otomatis. |
+| FR-14 | Reporter dapat mengubah dan menghapus tiket `new` miliknya. |
+| FR-15 | Sistem menerima satu lampiran opsional yang tervalidasi. |
+| FR-16 | Pengguna dapat mengelola profil dan password. |
+| FR-17 | Sistem menyediakan verifikasi dan reset password Breeze. |
+| FR-18 | Akun tanpa relasi domain dapat dihapus. |
+| FR-19 | Penghapusan akun dengan relasi domain ditolak dengan pesan jelas. |
 
 ---
 
-## 14. Kebutuhan Nonfungsional
+## 15. Kebutuhan Nonfungsional
 
 ### Keamanan
 
-- Password di-hash.
-- Route internal menggunakan middleware autentikasi.
-- Akses data menggunakan Policy.
-- Form menggunakan CSRF protection.
-- Upload divalidasi.
-- Query menggunakan Eloquent atau query builder.
+- password di-hash;
+- route internal menggunakan `auth`;
+- area developer menggunakan middleware role;
+- akses tiket menggunakan Policy;
+- form menggunakan CSRF;
+- upload divalidasi;
+- output pengguna menggunakan escaping Blade;
+- secret tidak disimpan di repository;
+- akses ilegal menghasilkan HTTP 403.
 
 ### Kinerja
 
-- Pagination 10 data per halaman.
-- Relasi menggunakan eager loading.
-- Query tidak dijalankan berulang dari Blade.
-- Lampiran maksimal 2 MB.
+- pagination 10 data;
+- relasi menggunakan eager loading;
+- tidak ada query database di Blade;
+- lampiran maksimal 2 MB.
 
-### Usability
+### Usability dan Maintainability
 
-- Antarmuka berbahasa Indonesia.
-- Pesan validasi mudah dipahami.
-- Status dan prioritas ditampilkan sebagai badge.
-- Tombol hanya muncul jika pengguna memiliki izin.
-
-### Maintainability
-
-- Penamaan konsisten.
-- Validasi menggunakan Form Request.
-- Otorisasi menggunakan Policy.
-- Service hanya digunakan untuk proses status.
-- Komentar kode hanya untuk logika yang tidak jelas.
+- antarmuka Bahasa Indonesia;
+- pesan validasi jelas;
+- status dan prioritas menggunakan badge konsisten;
+- tombol mengikuti otorisasi;
+- penamaan konsisten;
+- README dapat digunakan untuk instalasi dari awal.
 
 ---
 
-## 15. Struktur Database
+## 16. Struktur Database
 
-### 15.1 Tabel `users`
+### 16.1 `users`
 
-| Kolom | Tipe | Aturan |
-|---|---|---|
-| id | BIGINT UNSIGNED | Primary key |
-| name | VARCHAR(100) | Wajib |
-| email | VARCHAR(150) | Wajib dan unik |
-| email_verified_at | TIMESTAMP NULL | Opsional |
-| password | VARCHAR(255) | Wajib |
-| role | VARCHAR(20) | Default reporter |
-| remember_token | VARCHAR(100) NULL | Bawaan Laravel |
-| created_at | TIMESTAMP | Otomatis |
-| updated_at | TIMESTAMP | Otomatis |
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| name | varchar(100) |
+| email | varchar(150), unique |
+| email_verified_at | nullable |
+| password | varchar(255) |
+| role | varchar(20), default `reporter` |
+| remember_token | nullable |
+| timestamps | otomatis |
 
-### 15.2 Tabel `categories`
+### 16.2 `applications`
 
-| Kolom | Tipe | Aturan |
-|---|---|---|
-| id | BIGINT UNSIGNED | Primary key |
-| name | VARCHAR(80) | Wajib dan unik |
-| slug | VARCHAR(100) | Wajib dan unik |
-| created_at | TIMESTAMP | Otomatis |
-| updated_at | TIMESTAMP | Otomatis |
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| name | varchar(100), unique |
+| slug | varchar(120), unique |
+| timestamps | otomatis |
 
-### 15.3 Tabel `reports`
+### 16.3 `tickets`
 
-| Kolom | Tipe | Aturan |
-|---|---|---|
-| id | BIGINT UNSIGNED | Primary key |
-| report_number | VARCHAR(30) | Wajib dan unik |
-| user_id | BIGINT UNSIGNED | Foreign key users |
-| category_id | BIGINT UNSIGNED | Foreign key categories |
-| title | VARCHAR(150) | Wajib |
-| page_url | VARCHAR(255) NULL | Opsional |
-| description | TEXT | Wajib |
-| reproduction_steps | TEXT | Wajib |
-| actual_result | TEXT | Wajib |
-| expected_result | TEXT | Wajib |
-| impact | TEXT NULL | Opsional |
-| environment | VARCHAR(255) NULL | Opsional |
-| attachment_path | VARCHAR(255) NULL | Opsional |
-| status | VARCHAR(30) | Default submitted |
-| priority | VARCHAR(20) | Default medium |
-| analysis_note | TEXT NULL | Khusus developer |
-| solution | TEXT NULL | Khusus developer |
-| resolved_at | TIMESTAMP NULL | Saat resolved |
-| closed_at | TIMESTAMP NULL | Saat closed |
-| created_at | TIMESTAMP | Otomatis |
-| updated_at | TIMESTAMP | Otomatis |
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| ticket_number | varchar(30), unique |
+| reporter_id | foreign key users |
+| application_id | foreign key applications |
+| assigned_to | foreign key users, nullable |
+| title | varchar(150) |
+| category | varchar(30) |
+| priority | varchar(20), default `medium` |
+| status | varchar(30), default `new` |
+| description | text |
+| reproduction_steps | text, nullable |
+| analysis_notes | text, nullable |
+| resolution_notes | text, nullable |
+| resolved_at | timestamp, nullable |
+| timestamps | otomatis |
 
-### 15.4 Tabel `comments`
+### 16.4 `ticket_comments`
 
-| Kolom | Tipe | Aturan |
-|---|---|---|
-| id | BIGINT UNSIGNED | Primary key |
-| report_id | BIGINT UNSIGNED | Foreign key reports |
-| user_id | BIGINT UNSIGNED | Foreign key users |
-| comment | TEXT | Wajib |
-| created_at | TIMESTAMP | Otomatis |
-| updated_at | TIMESTAMP | Otomatis |
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| ticket_id | foreign key tickets |
+| user_id | foreign key users |
+| comment | text |
+| timestamps | otomatis |
 
-### 15.5 Tabel `report_status_histories`
+### 16.5 `ticket_status_histories`
 
-| Kolom | Tipe | Aturan |
-|---|---|---|
-| id | BIGINT UNSIGNED | Primary key |
-| report_id | BIGINT UNSIGNED | Foreign key reports |
-| changed_by | BIGINT UNSIGNED | Foreign key users |
-| old_status | VARCHAR(30) NULL | Status sebelumnya |
-| new_status | VARCHAR(30) | Status baru |
-| note | VARCHAR(255) NULL | Catatan perubahan |
-| created_at | TIMESTAMP | Otomatis |
-| updated_at | TIMESTAMP | Otomatis |
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| ticket_id | foreign key tickets |
+| changed_by | foreign key users |
+| from_status | varchar(30), nullable |
+| to_status | varchar(30) |
+| notes | varchar(255), nullable |
+| timestamps | otomatis |
+
+### 16.6 `attachments`
+
+| Kolom | Aturan |
+|---|---|
+| id | primary key |
+| ticket_id | foreign key tickets, unique |
+| original_name | varchar(255) |
+| file_path | varchar(255) |
+| mime_type | varchar(100) |
+| file_size | unsigned integer |
+| timestamps | otomatis |
+
+`ticket_id` dibuat unique agar satu tiket maksimal memiliki satu lampiran pada versi pertama.
 
 ---
 
-## 16. Relasi Database
+## 17. Relasi dan Foreign Key
 
 ```text
-User hasMany Reports
-User hasMany Comments
-User hasMany ReportStatusHistories through changed_by
+User hasMany reportedTickets melalui reporter_id
+User hasMany assignedTickets melalui assigned_to
+User hasMany ticketComments
+User hasMany ticketStatusHistories melalui changed_by
 
-Category hasMany Reports
+Application hasMany Tickets
 
-Report belongsTo User
-Report belongsTo Category
-Report hasMany Comments
-Report hasMany ReportStatusHistories
-
-Comment belongsTo Report
-Comment belongsTo User
-
-ReportStatusHistory belongsTo Report
-ReportStatusHistory belongsTo User through changed_by
+Ticket belongsTo reporter
+Ticket belongsTo application
+Ticket belongsTo assignee
+Ticket hasMany comments
+Ticket hasMany statusHistories
+Ticket hasOne attachment
 ```
 
-### Aturan Foreign Key
+Aturan delete:
 
-- `reports.user_id`: restrict.
-- `reports.category_id`: restrict.
-- `comments.report_id`: cascade.
-- `comments.user_id`: restrict.
-- `report_status_histories.report_id`: cascade.
-- `report_status_histories.changed_by`: restrict.
+- `tickets.reporter_id`: restrict;
+- `tickets.application_id`: restrict;
+- `tickets.assigned_to`: null on delete;
+- `ticket_comments.ticket_id`: cascade;
+- `ticket_comments.user_id`: restrict;
+- `ticket_status_histories.ticket_id`: cascade;
+- `ticket_status_histories.changed_by`: restrict;
+- `attachments.ticket_id`: cascade.
 
-Fitur hapus akun bawaan Laravel Breeze dipertahankan dengan ketentuan:
+Akun yang menjadi reporter, pengirim komentar, atau pengubah status tidak dapat dihapus. Akun yang hanya menjadi PIC dapat dihapus dan `assigned_to` berubah menjadi null.
 
-- akun dapat dihapus jika belum memiliki laporan, komentar, atau riwayat status;
-- akun yang telah memiliki relasi tersebut tidak dapat dihapus karena foreign key `restrict`;
-- penolakan harus ditangani oleh aplikasi dan menampilkan pesan yang jelas, bukan hanya mengandalkan database exception;
-- data laporan, komentar, dan riwayat status tidak boleh dihapus otomatis ketika akun dihapus.
+### 17.1 Latihan Query Database
+
+Latihan wajib dari modul:
+
+```sql
+SELECT ticket_number, title, status, priority
+FROM tickets
+WHERE priority IN ('high', 'critical')
+  AND status NOT IN ('resolved', 'rejected')
+ORDER BY created_at ASC;
+
+SELECT status, COUNT(*) AS total
+FROM tickets
+GROUP BY status;
+```
+
+Hasil latihan dan penjelasan mengenai nullable PIC, restrict, cascade, serta null-on-delete dicatat dalam `docs/database-design.md`.
 
 ---
 
-## 17. Model, Enum, Policy, dan Request
+## 18. Class Utama
 
 ### Model
 
 ```text
 User
-Category
-Report
-Comment
-ReportStatusHistory
+Application
+Ticket
+TicketComment
+TicketStatusHistory
+Attachment
 ```
 
 ### Enum
 
 ```text
 UserRole
-ReportStatus
-ReportPriority
+TicketStatus
+TicketPriority
+TicketCategory
 ```
 
 ### Policy
 
 ```text
-ReportPolicy
-CommentPolicy
+TicketPolicy
+TicketCommentPolicy
 ```
 
 ### Form Request
 
 ```text
-StoreReportRequest
-UpdateReportRequest
-UpdateReportStatusRequest
-UpdateReportHandlingRequest
-StoreCommentRequest
+StoreTicketRequest
+UpdateTicketRequest
+UpdateTicketHandlingRequest
+UpdateTicketStatusRequest
+StoreTicketCommentRequest
 ```
 
 ### Service
 
 ```text
-ReportStatusService
+TicketStatusService
 ```
 
 ---
 
-## 18. Struktur Folder
+## 19. Struktur Folder Domain
 
 ```text
 app/
 ├── Enums/
-│   ├── ReportPriority.php
-│   ├── ReportStatus.php
-│   └── UserRole.php
 ├── Http/
 │   ├── Controllers/
 │   │   ├── DashboardController.php
-│   │   ├── ReportController.php
-│   │   ├── ReportCommentController.php
+│   │   ├── TicketController.php
+│   │   ├── TicketCommentController.php
 │   │   └── Developer/
 │   │       ├── DashboardController.php
-│   │       └── ReportController.php
+│   │       └── TicketController.php
 │   ├── Middleware/
 │   │   └── EnsureUserIsDeveloper.php
 │   └── Requests/
-│       ├── StoreCommentRequest.php
-│       ├── StoreReportRequest.php
-│       ├── UpdateReportHandlingRequest.php
-│       ├── UpdateReportRequest.php
-│       └── UpdateReportStatusRequest.php
 ├── Models/
 ├── Policies/
 └── Services/
-    └── ReportStatusService.php
-```
+    └── TicketStatusService.php
 
-View:
-
-```text
 resources/views/
-├── layouts/
-│   └── app.blade.php
-├── components/
+├── tickets/
 ├── dashboard/
-│   └── index.blade.php
-├── reports/
-│   ├── index.blade.php
-│   ├── create.blade.php
-│   ├── show.blade.php
-│   └── edit.blade.php
-└── developer/
-    ├── dashboard/
-    │   └── index.blade.php
-    └── reports/
-        ├── index.blade.php
-        └── show.blade.php
+├── developer/
+│   ├── dashboard/
+│   └── tickets/
+├── components/
+└── layouts/
 ```
 
 ---
 
-## 19. Routing
+## 20. Routing
 
-### Route Autentikasi dan Akun
-
-Route autentikasi dan akun bawaan Laravel Breeze yang dipertahankan:
-
-```text
-GET    /register
-POST   /register
-GET    /login
-POST   /login
-POST   /logout
-GET    /forgot-password
-POST   /forgot-password
-GET    /reset-password/{token}
-POST   /reset-password
-GET    /verify-email
-GET    /verify-email/{id}/{hash}
-POST   /email/verification-notification
-GET    /confirm-password
-POST   /confirm-password
-PUT    /password
-GET    /profile
-PATCH  /profile
-DELETE /profile
-```
-
-Route profil, perubahan password, verifikasi email, dan logout menggunakan middleware autentikasi sesuai kebutuhan route bawaan Laravel Breeze. Penghapusan akun juga mengikuti batasan relasi data pada bagian 16.
-
-### Route Pelapor
+### Reporter
 
 ```text
 GET    /dashboard
-GET    /reports
-GET    /reports/create
-POST   /reports
-GET    /reports/{report}
-GET    /reports/{report}/edit
-PUT    /reports/{report}
-DELETE /reports/{report}
-POST   /reports/{report}/comments
-PATCH  /reports/{report}/close
+GET    /tickets
+GET    /tickets/create
+POST   /tickets
+GET    /tickets/{ticket}
+GET    /tickets/{ticket}/edit
+PUT    /tickets/{ticket}
+DELETE /tickets/{ticket}
+POST   /tickets/{ticket}/comments
+PATCH  /tickets/{ticket}/confirm
 ```
 
-### Route Developer
-
-Prefix:
-
-```text
-/developer
-```
-
-Route:
+### Developer
 
 ```text
 GET   /developer/dashboard
-GET   /developer/reports
-GET   /developer/reports/{report}
-PATCH /developer/reports/{report}/status
-PATCH /developer/reports/{report}/handling
-POST  /developer/reports/{report}/comments
+GET   /developer/tickets
+GET   /developer/tickets/{ticket}
+PATCH /developer/tickets/{ticket}/handling
+PATCH /developer/tickets/{ticket}/status
+POST  /developer/tickets/{ticket}/comments
 ```
 
-Semua route internal menggunakan middleware `auth`. Route developer juga menggunakan middleware role developer.
+Semua route internal memakai `auth`. Route developer memakai `['auth', 'developer']`.
+
+Route akun Breeze yang telah tersedia tetap dipertahankan.
 
 ---
 
-## 20. Dashboard
+## 21. Dashboard
 
-### Dashboard Pelapor
+### Reporter
 
-Menampilkan data milik pengguna login:
+- total tiket miliknya;
+- jumlah `new`;
+- jumlah `in_progress`;
+- jumlah `waiting_confirmation`;
+- jumlah `resolved`;
+- lima tiket terbaru.
 
-- total laporan;
-- jumlah submitted;
-- jumlah in progress;
-- jumlah resolved;
-- lima laporan terbaru.
+### Developer
 
-### Dashboard Developer
+- total seluruh tiket;
+- jumlah per status;
+- jumlah prioritas `critical`;
+- jumlah tiket tanpa PIC;
+- lima tiket terbaru;
+- lima tiket prioritas `high` atau `critical`.
 
-Menampilkan:
-
-- total laporan;
-- jumlah submitted;
-- jumlah reviewed;
-- jumlah in progress;
-- jumlah resolved;
-- jumlah critical;
-- lima laporan terbaru;
-- lima laporan high atau critical.
-
-Tidak perlu chart pada versi awal.
+Dashboard developer memenuhi kebutuhan ringkasan koordinator tanpa role baru.
 
 ---
 
-## 21. Form Laporan
+## 22. Form Tiket dan Validasi
 
-Field:
+Field reporter:
 
 ```text
-category_id
+application_id
 title
-page_url
+category
 description
 reproduction_steps
-actual_result
-expected_result
-impact
-environment
 attachment
 ```
 
-### Validasi
+Validasi:
 
 ```text
-category_id: required, exists:categories,id
-
+application_id: required, exists:applications,id
 title: required, string, min:5, max:150
-
-page_url: nullable, string, max:255
-
+category: required, enum TicketCategory
 description: required, string, min:20, max:5000
-
-reproduction_steps: required, string, min:10, max:5000
-
-actual_result: required, string, min:10, max:3000
-
-expected_result: required, string, min:10, max:3000
-
-impact: nullable, string, max:2000
-
-environment: nullable, string, max:255
-
+reproduction_steps: nullable, string, max:5000
 attachment: nullable, image, mimes:jpg,jpeg,png,webp, max:2048
 ```
 
+Reporter tidak menginput status, prioritas, PIC, analisis, atau solusi. Nilai awal priority adalah `medium` dan status adalah `new`.
+
 ---
 
-## 22. Nomor Laporan
+## 23. Nomor Tiket
 
 Format:
 
 ```text
-INC-YYYYMM-XXXX
+TCK-YYYYMM-XXXX
 ```
 
 Contoh:
 
 ```text
-INC-202607-0001
+TCK-202607-0001
 ```
 
-Aturan:
+Ketentuan:
 
-1. Dibuat otomatis.
-2. Tidak diinput pengguna.
-3. Harus unik.
-4. Dapat menggunakan ID laporan sebagai dasar urutan.
-5. Dibuat setelah model tersimpan.
-6. Gunakan transaction bila diperlukan.
-7. Jangan menggunakan random string sebagai nomor utama.
+- dibuat otomatis oleh sistem;
+- tidak berasal dari request pengguna;
+- unik;
+- menggunakan ID tiket sebagai urutan latihan;
+- pembuatan tiket dan nomor dilakukan secara aman dalam transaction;
+- risiko concurrency didokumentasikan;
+- tidak menggunakan random string sebagai nomor utama.
+
+Kolom `ticket_number` boleh nullable pada insert awal, kemudian diisi dari ID dalam transaction dan tetap memiliki unique index.
 
 ---
 
-## 23. Edit dan Hapus
+## 24. Pengelolaan Tiket Reporter
 
-Reporter hanya dapat mengedit atau menghapus laporan jika:
+Reporter dapat mengubah atau menghapus tiket jika:
 
 ```text
-report.user_id == auth()->id()
-report.status == submitted
+ticket.reporter_id == auth()->id()
+ticket.status == new
 ```
 
-Tombol tidak boleh ditampilkan jika tidak memiliki izin. Pemeriksaan backend melalui Policy tetap wajib.
+Policy tetap wajib meskipun tombol disembunyikan. Lampiran ikut dihapus ketika tiket dihapus.
 
 ---
 
-## 24. Proses Penanganan Developer
+## 25. Penanganan Developer
 
-Halaman detail developer menampilkan:
+Developer dapat menyimpan:
 
-- nomor laporan;
-- data pelapor;
-- kategori;
-- isi laporan;
-- lampiran;
-- status;
-- prioritas;
-- analisis;
-- solusi;
-- komentar;
-- riwayat status.
+- `assigned_to`;
+- `priority`;
+- `analysis_notes`;
+- `resolution_notes`;
+- status baru;
+- catatan perubahan status.
 
-Developer dapat:
+Ketentuan:
 
-1. Mengubah prioritas.
-2. Menulis catatan analisis.
-3. Menulis solusi.
-4. Mengubah status.
-5. Menambahkan komentar.
+- `assigned_to` nullable dan harus menunjuk user role developer;
+- priority harus termasuk `TicketPriority`;
+- reporter tidak boleh mengubah field penanganan;
+- `resolution_notes` wajib sebelum `waiting_confirmation`;
+- perubahan status wajib melalui `TicketStatusService`.
 
-Perubahan status wajib melalui `ReportStatusService`.
+---
+
+## 26. TicketStatusService
 
 Service bertanggung jawab untuk:
 
-- memvalidasi transisi;
+- memvalidasi transition map;
+- membedakan transisi developer dan konfirmasi reporter;
+- memastikan solusi tersedia sebelum `waiting_confirmation`;
 - memperbarui status;
-- mengisi `resolved_at`;
-- mengisi `closed_at`;
-- menyimpan riwayat;
-- menjalankan database transaction.
+- mengisi `resolved_at` saat status menjadi `resolved`;
+- menyimpan history;
+- menjalankan database transaction;
+- melempar exception yang dapat ditangani secara jelas.
 
 ---
 
-## 25. Aturan Transisi Status
+## 27. Riwayat Status
 
-```php
-submitted => [reviewed, rejected]
-reviewed => [in_progress, rejected]
-in_progress => [resolved]
-resolved => [in_progress, closed]
-closed => []
-rejected => []
-```
-
-Transisi berikut harus ditolak:
+Setiap perubahan menyimpan:
 
 ```text
-submitted → resolved
-closed → in_progress
-rejected → reviewed
+ticket_id
+changed_by
+from_status
+to_status
+notes
+created_at
 ```
 
-Status `resolved` hanya valid jika `solution` terisi.
+Riwayat ditampilkan dari terbaru, tidak dapat diedit, dan tidak dapat dihapus melalui UI.
+
+Pembuatan tiket mencatat history awal dengan `from_status = null` dan `to_status = new`.
 
 ---
 
-## 26. Riwayat Status
+## 28. Komentar
 
-Setiap perubahan status menyimpan:
-
-- `report_id`;
-- `changed_by`;
-- `old_status`;
-- `new_status`;
-- `note`;
-- waktu perubahan.
-
-Riwayat:
-
-- ditampilkan dari terbaru ke terlama;
-- tidak dapat diedit;
-- tidak dapat dihapus melalui antarmuka.
+- hanya pengguna yang memiliki akses ke tiket;
+- wajib, minimal 2 dan maksimal 2000 karakter;
+- menampilkan nama dan waktu pengirim;
+- tidak dapat diedit atau dihapus pada versi pertama.
 
 ---
 
-## 27. Komentar
+## 29. Lampiran
 
-Aturan komentar:
-
-- hanya pengguna yang memiliki akses ke laporan;
-- wajib diisi;
-- minimal 2 karakter;
-- maksimal 2000 karakter;
-- tidak dapat diedit;
-- tidak dapat dihapus pada versi awal;
-- menampilkan nama dan waktu pengirim.
-
----
-
-## 28. Upload Lampiran
-
-- Satu gambar per laporan.
-- Opsional.
-- Format JPG, JPEG, PNG, atau WEBP.
-- Maksimal 2 MB.
-- Disimpan pada storage publik.
-- Gunakan nama file hasil generate.
-- Jalankan `php artisan storage:link`.
-- File dihapus ketika laporan dihapus.
-- Tidak membuat multiple upload.
+- satu gambar per tiket;
+- opsional;
+- JPG, JPEG, PNG, atau WEBP;
+- maksimal 2 MB;
+- disimpan pada public storage dengan nama generated;
+- metadata disimpan di tabel `attachments`;
+- file lama dihapus ketika diganti;
+- file dihapus ketika tiket dihapus;
+- tidak membuat multiple upload.
 
 ---
 
-## 29. Pencarian, Filter, dan Pagination
+## 30. Pencarian, Filter, dan Pagination
 
-### Pencarian
+Pencarian:
 
-- nomor laporan;
+- nomor tiket;
 - judul;
-- nama pelapor.
+- nama reporter.
 
-### Filter
+Filter:
 
+- aplikasi;
 - status;
 - prioritas;
 - kategori;
-- tanggal awal;
-- tanggal akhir.
+- PIC;
+- tanggal awal dan akhir.
 
-### Pengurutan
+Default urutan MVP:
 
 ```text
 created_at descending
 ```
 
-### Pagination
-
-```text
-10 data per halaman
-```
-
-Gunakan `withQueryString()` agar filter tetap tersimpan saat pagination.
+Pagination 10 data dan menggunakan `withQueryString()`.
 
 ---
 
-## 30. Otorisasi
+## 31. Otorisasi
 
-`ReportPolicy` minimal memiliki method:
+`TicketPolicy` minimal:
 
 ```text
 viewAny
@@ -1002,52 +849,44 @@ view
 create
 update
 delete
-close
+confirm
 handle
 ```
 
 Aturan:
 
-- reporter hanya melihat laporan sendiri;
-- developer melihat seluruh laporan;
-- reporter hanya mengedit dan menghapus laporan submitted miliknya;
-- reporter hanya menutup laporan resolved miliknya;
-- developer menangani seluruh laporan;
-- akses tidak sah menghasilkan HTTP 403.
-
-Menyembunyikan tombol saja tidak cukup. Backend wajib melakukan pemeriksaan Policy.
+- reporter hanya melihat tiket miliknya;
+- developer melihat seluruh tiket;
+- reporter hanya update/delete tiket `new` miliknya;
+- reporter hanya mengonfirmasi tiket `waiting_confirmation` miliknya;
+- developer menangani seluruh tiket;
+- akses ilegal menghasilkan 403.
 
 ---
 
-## 31. Middleware Developer
+## 32. Middleware Developer
 
-Buat middleware:
+`EnsureUserIsDeveloper` membatasi area developer.
 
 ```text
-EnsureUserIsDeveloper
+guest + auth middleware → redirect login
+reporter → 403
+developer → request diteruskan
 ```
-
-Middleware memastikan:
-
-- pengguna telah login;
-- role pengguna adalah developer;
-- akses tidak sah menghasilkan HTTP 403 atau redirect dengan pesan yang sesuai.
 
 Tidak menggunakan package permission.
 
 ---
 
-## 32. Seeder
+## 33. Seeder
 
-### CategorySeeder
+### ApplicationSeeder
 
-Membuat kategori awal.
+Membuat tiga aplikasi internal dari modul.
 
 ### DeveloperSeeder
 
-Membuat akun developer contoh.
-
-Data sensitif dapat diambil dari `.env`:
+Membuat akun developer dari konfigurasi:
 
 ```text
 DEVELOPER_NAME
@@ -1055,118 +894,81 @@ DEVELOPER_EMAIL
 DEVELOPER_PASSWORD
 ```
 
-Jangan menulis password produksi pada repository publik.
+Seeder harus idempotent dan tidak menyimpan password produksi di repository.
 
 ### DatabaseSeeder
 
 Memanggil:
 
 ```text
-CategorySeeder
+ApplicationSeeder
 DeveloperSeeder
 ```
 
 ---
 
-## 33. Antarmuka
+## 34. Antarmuka
 
-Prinsip UI:
-
-- sederhana;
-- bersih;
-- responsif;
-- mudah dipahami;
-- fokus pada fungsi.
-
-Komponen utama:
-
-- navbar;
-- sidebar developer opsional;
+- sederhana, bersih, responsif;
+- navbar dan navigasi sesuai role;
 - statistik card;
-- tabel laporan;
-- badge status;
-- badge prioritas;
-- form;
+- tabel tiket;
+- badge status dan prioritas;
+- informasi aplikasi dan PIC;
 - flash message;
+- validation error;
 - pagination;
 - empty state.
 
-Warna status harus konsisten. Detail warna dapat disesuaikan selama mudah dibedakan.
+---
+
+## 35. Error Handling dan Logging
+
+- gunakan Form Request;
+- gunakan exception bawaan untuk 403 dan 404;
+- gunakan transaction pada workflow;
+- jangan menelan exception;
+- jangan menampilkan detail sensitif pada production;
+- log kegagalan upload, perubahan status, dan kejadian abnormal;
+- `APP_DEBUG=false` pada production;
+- tidak membuat activity log khusus.
 
 ---
 
-## 34. Error Handling dan Logging
+## 36. Testing Manual
 
-### Error Handling
+Dokumentasikan minimal skenario berikut pada `docs/manual-test-cases.md`:
 
-1. Validasi menggunakan Form Request.
-2. Gunakan exception bawaan Laravel untuk 403 dan 404.
-3. Gunakan transaction untuk perubahan status.
-4. Tangani kegagalan upload.
-5. Jangan menampilkan error sensitif pada production.
-6. Jangan menggunakan `try-catch` pada semua method tanpa alasan.
-7. Jangan menelan exception tanpa logging.
+1. Registrasi, login, dan logout.
+2. Reporter membuat tiket valid.
+3. Deskripsi terlalu pendek ditolak.
+4. Nomor tiket dan status awal terbentuk.
+5. Reporter hanya melihat tiket sendiri.
+6. Akses tiket reporter lain menghasilkan 403.
+7. Reporter mengubah dan menghapus tiket `new`.
+8. Reporter tidak dapat mengubah tiket yang sudah dianalisis.
+9. Developer melihat seluruh tiket.
+10. Developer menetapkan prioritas dan PIC.
+11. PIC harus ber-role developer.
+12. Developer mengubah status valid.
+13. Transisi ilegal ditolak.
+14. History status tersimpan.
+15. Developer mengisi analisis dan solusi.
+16. Reporter mengonfirmasi `waiting_confirmation`.
+17. Komentar berhasil dan akses komentar aman.
+18. Pencarian, filter, dan pagination bekerja.
+19. Lampiran tidak valid ditolak.
+20. Akun dengan relasi domain tidak dapat dihapus.
 
-### Logging
-
-Gunakan log untuk:
-
-- kegagalan upload;
-- kegagalan perubahan status;
-- exception saat menyimpan proses penanganan;
-- kejadian tidak normal yang perlu diperiksa.
-
-Tidak membuat sistem activity log khusus.
-
----
-
-## 35. Testing Manual
-
-Buat file:
-
-```text
-docs/manual-test-cases.md
-```
-
-Skenario minimal:
-
-1. Registrasi berhasil.
-2. Email duplikat ditolak.
-3. Login berhasil.
-4. Password salah ditolak.
-5. Reporter membuat laporan valid.
-6. Field wajib kosong ditolak.
-7. Reporter melihat laporan sendiri.
-8. Reporter tidak dapat melihat laporan orang lain.
-9. Reporter mengedit laporan submitted.
-10. Reporter tidak dapat mengedit laporan in progress.
-11. Reporter menghapus laporan submitted.
-12. Developer melihat seluruh laporan.
-13. Reporter tidak dapat membuka halaman developer.
-14. Developer mengubah prioritas.
-15. Developer mengubah status valid.
-16. Transisi tidak valid ditolak.
-17. Resolved tanpa solusi ditolak.
-18. Komentar berhasil ditambahkan.
-19. Riwayat status tercatat.
-20. Reporter menutup laporan resolved.
-21. Pengguna memperbarui profil.
-22. Pengguna mengubah password.
-23. Pengguna meminta reset password.
-24. Pengguna memverifikasi email.
-25. Pengguna tanpa relasi data menghapus akun.
-26. Pengguna dengan relasi laporan tidak dapat menghapus akun.
-27. Password salah menolak penghapusan akun.
-
-Format test case:
+Format:
 
 ```text
 ID
 Nama Skenario
 Prasyarat
-Langkah Pengujian
+Langkah
 Data Uji
-Hasil yang Diharapkan
+Hasil Diharapkan
 Hasil Aktual
 Status
 Catatan
@@ -1174,464 +976,248 @@ Catatan
 
 ---
 
-## 36. Automated Testing
+## 37. Automated Testing
 
 Test minimal:
 
 ```text
 AuthenticationTest
-EmailVerificationTest
-PasswordResetTest
-PasswordUpdateTest
-ProfileTest
-ReportCreationTest
-ReportAuthorizationTest
-ReportUpdateTest
-ReportStatusTest
-ReportCommentTest
 DeveloperAccessTest
+ApplicationSeederTest
+TicketCreationTest
+TicketAuthorizationTest
+TicketUpdateTest
+TicketHandlingTest
+TicketStatusTest
+TicketCommentTest
+ProfileTest
 ```
 
 Cakupan wajib:
 
-- laporan dapat dibuat;
-- validasi laporan bekerja;
-- pengguna tidak dapat melihat laporan orang lain;
-- laporan non-submitted tidak dapat diedit reporter;
-- non-developer tidak dapat membuka halaman developer;
-- developer dapat menjalankan transisi valid;
-- transisi tidak valid ditolak;
-- resolved membutuhkan solusi;
-- perubahan status membuat riwayat;
-- reporter dapat menutup laporan resolved;
-- verifikasi dan reset password bekerja;
-- profil dan password dapat diperbarui;
-- akun tanpa relasi data dapat dihapus;
-- akun dengan relasi data tidak dapat dihapus.
+- status awal dan nomor tiket;
+- validasi input;
+- akses kepemilikan dan 403;
+- role developer;
+- prioritas dan PIC;
+- transition map;
+- solusi sebelum `waiting_confirmation`;
+- history dalam transaction;
+- konfirmasi reporter;
+- search/filter/pagination;
+- akun dengan relasi domain tidak dapat dihapus.
+
+Target modul minimal 5 automated test terlampaui.
 
 ---
 
-## 37. Dokumentasi
+## 38. Debugging Wajib
+
+Minimal enam bug modul harus disimulasikan dan didokumentasikan:
+
+| ID | Gejala | Arah Perbaikan |
+|---|---|---|
+| BUG-001 | Reporter melihat tiket pengguna lain | Policy dan test 403 |
+| BUG-002 | Judul lebih dari 150 diterima | Form Request |
+| BUG-003 | History tidak tersimpan | Transaction dan relasi |
+| BUG-004 | Filter hilang saat pagination | `withQueryString()` |
+| BUG-005 | Tiket resolved kembali ke new | Transition map |
+| BUG-006 | Halaman error ketika PIC null | Null-safe/optional relation |
+
+Setiap bug memiliki reproduksi, expected/actual result, root cause, fix, retest, dan regression test.
+
+---
+
+## 39. Dokumentasi
 
 File minimal:
 
 ```text
 README.md
 PRD.md
+CHANGELOG.md
 docs/
 ├── database-design.md
+├── backlog.md
 ├── manual-test-cases.md
 ├── bug-reports.md
-└── presentation-outline.md
+├── user-guide.md
+├── operational-log.md
+├── daily-learning-log.md
+├── presentation-outline.md
+└── evidence/
+
+.github/
+└── pull_request_template.md
 ```
 
-README memuat:
+README memuat deskripsi, fitur, teknologi, instalasi, environment, migration/seeder, akun demo, testing, struktur proyek, dan known issues.
 
-- deskripsi proyek;
-- tech stack;
-- kebutuhan sistem;
-- instalasi;
-- konfigurasi `.env`;
-- migration dan seeder;
-- cara menjalankan aplikasi;
-- cara menjalankan test;
-- akun developer lokal;
-- ringkasan fitur.
+Folder `evidence` menyimpan screenshot fitur dan pengujian yang diperlukan untuk latihan.
+
+`backlog.md` mencatat prioritas dan estimasi pekerjaan. `operational-log.md` mencatat issue dukungan, dampak, tindakan, dan status. `daily-learning-log.md` mencatat materi yang dipahami, kendala, dan tindakan berikutnya.
 
 ---
 
-## 38. Git Workflow
-
-Branch:
+## 40. Git Workflow
 
 ```text
 main
 develop
 feature/*
 fix/*
-docs/*
 test/*
+docs/*
 ```
 
-Contoh:
+Alur:
+
+```text
+feature/fix/test/docs → pull request ke develop
+develop → main setelah milestone stabil
+```
+
+Commit:
+
+```text
+feat: deskripsi Bahasa Indonesia
+fix: deskripsi Bahasa Indonesia
+test: deskripsi Bahasa Indonesia
+docs: deskripsi Bahasa Indonesia
+refactor: deskripsi Bahasa Indonesia
+chore: deskripsi Bahasa Indonesia
+```
+
+Satu branch dan commit harus memiliki tujuan yang jelas.
+
+Contoh branch sesuai modul:
 
 ```text
 feature/authentication
-feature/report-management
-feature/developer-dashboard
-feature/report-status
-fix/report-authorization
-test/report-feature-tests
-docs/project-documentation
+feature/ticket-management
+feature/status-history
+feature/comment-filter
+test/ticket-feature-test
+fix/unauthorized-ticket-access
 ```
-
-Commit convention:
-
-```text
-type: deskripsi singkat
-```
-
-Type:
-
-```text
-feat
-fix
-docs
-test
-refactor
-style
-chore
-```
-
-Contoh:
-
-```text
-feat: add report submission feature
-fix: prevent reporter from viewing another report
-test: add report status transition tests
-docs: add installation guide
-```
-
-Satu commit harus fokus pada satu perubahan.
 
 ---
 
-## 39. Tahapan Implementasi
+## 41. Tahapan Implementasi
 
-### Tahap 1 — Inisialisasi
+1. Analisis requirement, scope, backlog, dan repository.
+2. Setup Laravel, Breeze, konfigurasi, role, seeder developer, dan middleware.
+3. Enum domain, ERD, migration, model, factory, dan seeder aplikasi.
+4. CRUD tiket reporter, nomor tiket, lampiran, dan Policy.
+5. Area developer, prioritas, PIC, analisis, solusi, dan workflow.
+6. Komentar, history, pencarian, filter, dan pagination.
+7. Dashboard, validasi, error handling, dan UI.
+8. Simulasi enam bug dan regression test.
+9. Testing manual dan otomatis.
+10. Dokumentasi, bukti, changelog, demo, dan presentasi.
 
-1. Buat proyek Laravel 12.
-2. Konfigurasi database.
-3. Jalankan aplikasi.
-4. Inisialisasi Git.
-5. Buat repository.
-6. Buat branch `develop`.
-7. Commit awal.
+Setiap tahap diselesaikan dan diuji sebelum lanjut.
 
-### Tahap 2 — Autentikasi dan Role
-
-1. Pasang autentikasi Blade.
-2. Tambahkan kolom role.
-3. Buat enum role.
-4. Buat seeder developer.
-5. Buat middleware developer.
-6. Buat test akses role.
-
-### Tahap 3 — Database
-
-1. Buat migration semua tabel.
-2. Buat model dan relasi.
-3. Buat enum status dan prioritas.
-4. Buat seeder kategori.
-5. Buat factory.
-6. Jalankan migration dan seeder.
-
-### Tahap 4 — Fitur Pelapor
-
-1. Dashboard pelapor.
-2. Daftar laporan.
-3. Form tambah.
-4. Validasi.
-5. Nomor laporan.
-6. Detail laporan.
-7. Edit.
-8. Hapus.
-9. Policy.
-10. Test authorization.
-
-### Tahap 5 — Fitur Developer
-
-1. Dashboard developer.
-2. Daftar seluruh laporan.
-3. Pencarian dan filter.
-4. Detail penanganan.
-5. Prioritas.
-6. Analisis.
-7. Solusi.
-8. Perubahan status.
-9. Status service.
-10. Riwayat status.
-11. Feature Test.
-
-### Tahap 6 — Komentar
-
-1. Form komentar.
-2. Validasi.
-3. Otorisasi.
-4. Tampilan komentar.
-5. Test komentar.
-
-### Tahap 7 — UI
-
-1. Rapikan layout.
-2. Tambahkan badge.
-3. Tambahkan flash message.
-4. Tambahkan empty state.
-5. Pastikan responsif.
-
-### Tahap 8 — Debugging
-
-1. Jalankan seluruh alur.
-2. Periksa log.
-3. Uji akses tidak sah.
-4. Uji upload.
-5. Uji filter dan pagination.
-6. Perbaiki bug pada branch `fix/*`.
-7. Dokumentasikan bug.
-
-### Tahap 9 — Testing
-
-1. Buat test manual.
-2. Buat Feature Test.
-3. Jalankan seluruh test.
-4. Perbaiki test gagal.
-5. Catat hasil.
-
-### Tahap 10 — Dokumentasi dan Presentasi
-
-1. Lengkapi README.
-2. Buat database design.
-3. Buat bug report.
-4. Buat outline presentasi.
-5. Uji demo.
-6. Merge ke `develop`.
-7. Uji ulang.
-8. Merge ke `main`.
+Setiap hari latihan mencatat materi yang dipahami, kendala, serta tindakan berikutnya pada `docs/daily-learning-log.md`.
 
 ---
 
-## 40. Skenario Debugging Latihan
+## 42. Simulasi Perubahan Setelah MVP
 
-### Bug 1 — Akses Laporan Pengguna Lain
+Setelah versi awal selesai, kerjakan sebagai mini sprint terpisah:
 
-Gejala: reporter dapat membuka URL laporan pengguna lain.
+1. Tiket `critical` yang belum selesai tampil sebelum prioritas lain.
+2. Urutan kedua memakai `created_at` terlama.
+3. Status `rejected` mewajibkan notes minimal 10 karakter.
+4. Request tanpa notes ditolak dan status tidak berubah.
+5. Semua regression test tetap lulus.
 
-Penyelesaian:
-
-1. Reproduksi bug.
-2. Periksa controller dan route model binding.
-3. Buat atau perbaiki `ReportPolicy`.
-4. Tambahkan authorize.
-5. Buat Feature Test.
-6. Pastikan HTTP 403.
-7. Dokumentasikan bug.
-
-### Bug 2 — Status Langsung Resolved
-
-Gejala: `submitted` dapat langsung menjadi `resolved`.
-
-Penyelesaian:
-
-1. Periksa logika status.
-2. Terapkan daftar transisi.
-3. Pindahkan logika ke service.
-4. Tolak transisi tidak valid.
-5. Tambahkan test.
-
-### Bug 3 — Resolved Tanpa Solusi
-
-Penyelesaian:
-
-1. Tambahkan validasi kondisional.
-2. Solusi wajib saat status resolved.
-3. Tambahkan test.
-4. Tampilkan pesan validasi jelas.
-
-### Bug 4 — N+1 Query
-
-Penyelesaian:
-
-1. Periksa query daftar laporan.
-2. Gunakan `with(['user', 'category'])`.
-3. Uji ulang jumlah query.
-4. Dokumentasikan perbaikan.
-
-### Bug 5 — File Tidak Valid
-
-Penyelesaian:
-
-1. Periksa Form Request.
-2. Validasi MIME dan ukuran.
-3. Uji file bukan gambar dan file lebih dari 2 MB.
-4. Pastikan ditolak.
-
-### Bug 6 — Filter Hilang Saat Pagination
-
-Penyelesaian:
-
-1. Reproduksi bug.
-2. Gunakan `withQueryString()`.
-3. Uji kombinasi filter.
-4. Dokumentasikan.
+Perubahan dibuat melalui issue, branch, test, self-review, pull request, dan pembaruan dokumentasi.
 
 ---
 
-## 41. Definition of Done
+## 43. Definition of Done
 
-Sebuah fitur dianggap selesai jika:
+Fitur selesai jika:
 
-- sesuai requirement;
-- struktur data benar;
-- validasi tersedia;
-- otorisasi tersedia;
+- sesuai requirement modul dan PRD;
+- migration dan relasi benar;
+- validasi dan otorisasi tersedia;
+- alur berhasil dan gagal ditangani;
 - UI dapat digunakan;
-- alur normal berhasil;
-- alur gagal ditangani;
+- test relevan lulus;
 - tidak ada error penting pada log;
-- test relevan dibuat;
-- kode mengikuti standar;
-- commit jelas;
-- dokumentasi diperbarui.
+- commit dan pull request jelas;
+- dokumentasi diperbarui;
+- pembuat dapat menjelaskan keputusan teknisnya.
 
 ---
 
-## 42. Acceptance Criteria Proyek
+## 44. Acceptance Criteria Proyek
 
-Proyek selesai jika:
-
-1. Registrasi dan login bekerja.
-2. Role reporter dan developer berjalan.
-3. Reporter dapat membuat laporan.
-4. Reporter hanya melihat laporan sendiri.
-5. Reporter dapat edit dan hapus laporan submitted.
-6. Developer melihat seluruh laporan.
-7. Pencarian dan filter bekerja.
-8. Prioritas dapat diubah developer.
-9. Status mengikuti alur.
-10. Transisi tidak valid ditolak.
-11. Resolved wajib memiliki solusi.
-12. Riwayat status tersimpan.
-13. Komentar bekerja.
-14. Reporter dapat menutup laporan resolved.
-15. Upload gambar tervalidasi.
-16. Pagination bekerja.
-17. Policy mencegah akses tidak sah.
-18. Test utama berhasil.
-19. README tersedia.
-20. Tidak ada fitur di luar scope.
-21. Verifikasi email serta lupa dan reset password bekerja.
-22. Pengguna dapat memperbarui profil dan password.
-23. Pengguna tanpa relasi data dapat menghapus akun.
-24. Penghapusan akun yang memiliki relasi data ditolak tanpa menghapus data terkait.
+1. Autentikasi dan dua role bekerja.
+2. Master aplikasi tersedia.
+3. Reporter dapat membuat tiket dengan nomor otomatis dan status `new`.
+4. Reporter hanya melihat tiket miliknya.
+5. Developer melihat seluruh tiket.
+6. Developer dapat menetapkan prioritas dan PIC.
+7. PIC hanya user developer.
+8. Workflow mengikuti transition map.
+9. Transisi ilegal ditolak.
+10. Analisis dan solusi tersimpan.
+11. History tersimpan bersama perubahan status.
+12. Reporter dapat mengonfirmasi `waiting_confirmation`.
+13. Komentar bekerja sesuai hak akses.
+14. Lampiran tervalidasi.
+15. Pencarian, filter, dan pagination bekerja.
+16. Dashboard reporter dan developer bekerja.
+17. Policy mencegah IDOR.
+18. Enam bug modul didokumentasikan.
+19. Testing manual dan otomatis lulus.
+20. README, changelog, user guide, dan bahan presentasi tersedia.
+21. Instalasi dapat dilakukan dari repository kosong.
+22. Tidak ada fitur di luar scope.
 
 ---
 
-## 43. Batasan untuk AI Coding Assistant
+## 45. Batasan untuk AI Coding Assistant
 
 AI coding assistant wajib:
 
-1. Membaca seluruh `PRD.md` sebelum membuat kode.
-2. Mengerjakan satu tahap dalam satu waktu.
-3. Tidak membuat seluruh aplikasi sekaligus.
-4. Tidak mengubah tech stack.
-5. Tidak menggunakan Filament atau Livewire.
-6. Tidak menggunakan DTO atau repository pattern.
-7. Tidak menambahkan package tanpa persetujuan.
-8. Tidak membuat API tanpa instruksi.
-9. Tidak menambah fitur di luar scope.
-10. Tidak mengubah nama tabel, role, status, atau prioritas.
-11. Tidak menyimpan business logic di Blade.
-12. Tidak menaruh seluruh logika di controller.
-13. Tidak menggunakan raw SQL jika Eloquent mencukupi.
-14. Tidak mengabaikan validasi dan otorisasi.
-15. Tidak membuat multiple attachment.
-16. Tidak membuat notifikasi.
-17. Tidak mengubah `.env` secara otomatis.
-18. Tidak menulis password asli ke repository.
-19. Tidak menghapus test gagal agar build terlihat berhasil.
-20. Menjelaskan setiap file yang dibuat atau diubah.
-21. Menyebutkan command yang harus dijalankan.
-22. Menyatakan setiap asumsi.
-23. Memberikan langkah pengujian.
-24. Berhenti setelah tahap yang diminta selesai.
+1. Membaca modul dan PRD sebelum memberi implementasi.
+2. Menjadikan modul sebagai acuan konsep.
+3. Mengerjakan satu sub-tahap dalam satu waktu.
+4. Menjelaskan tujuan, file, command, alur, dan cara test.
+5. Tidak mengubah istilah domain, tabel, role, enum, atau workflow tanpa instruksi.
+6. Tidak membuat seluruh aplikasi sekaligus.
+7. Tidak mengubah tech stack.
+8. Tidak menambahkan package tanpa persetujuan.
+9. Tidak membuat API atau fitur di luar scope.
+10. Tidak mengubah `.env` otomatis tanpa izin.
+11. Tidak menyimpan secret.
+12. Tidak menghapus test gagal untuk menyembunyikan masalah.
+13. Menggunakan Form Request, Policy, middleware, enum, dan transaction sesuai kebutuhan.
+14. Menyebutkan asumsi dan langkah pengujian.
+15. Berhenti setelah sub-tahap yang diminta selesai.
 
 ---
 
-## 44. Format Instruksi untuk AI Coding Assistant
+## 46. Hasil Akhir
 
-```text
-Baca dan patuhi seluruh PRD.md.
-
-Kerjakan hanya Tahap [nomor dan nama tahap].
-
-Sebelum menulis kode:
-1. Jelaskan tujuan tahap.
-2. Sebutkan file yang dibuat atau diubah.
-3. Sebutkan command yang harus dijalankan.
-4. Jelaskan alur implementasi.
-
-Saat menulis kode:
-1. Gunakan Laravel 12.
-2. Gunakan MVC standar.
-3. Gunakan Form Request untuk validasi.
-4. Gunakan Policy untuk otorisasi.
-5. Jangan menambahkan fitur di luar PRD.
-6. Jangan menggunakan package tambahan.
-
-Setelah menulis kode:
-1. Jelaskan cara menguji.
-2. Berikan checklist hasil.
-3. Sebutkan kemungkinan error.
-4. Berhenti setelah tahap selesai.
-```
-
----
-
-## 45. Prompt Awal untuk AI Coding Assistant
-
-```text
-Anda bertindak sebagai Senior Laravel Developer yang membimbing Junior Developer.
-
-Baca seluruh file PRD.md sebelum memberikan solusi. PRD.md adalah sumber aturan utama proyek. Jangan mengubah requirement, tech stack, struktur database, role, status, prioritas, atau ruang lingkup tanpa instruksi eksplisit.
-
-Gunakan Laravel 12, PHP 8.3, MySQL, Blade, Tailwind CSS, JavaScript dasar, Git, dan PHPUnit.
-
-Gunakan MVC standar Laravel. Hindari overengineering. Jangan menggunakan Filament, Livewire, DTO, repository pattern, microservices, atau package tambahan yang tidak diperlukan.
-
-Kerjakan proyek secara bertahap. Pada setiap tahap:
-1. Jelaskan tujuan.
-2. Sebutkan file yang dibuat atau diubah.
-3. Berikan command yang diperlukan.
-4. Tulis kode lengkap yang relevan.
-5. Jelaskan alur kode.
-6. Berikan langkah pengujian.
-7. Berikan checklist selesai.
-8. Berhenti setelah tahap tersebut selesai.
-
-Jangan melanjutkan ke tahap berikutnya tanpa instruksi.
-```
-
----
-
-## 46. Hasil Akhir yang Diharapkan
-
-Hasil proyek:
-
-- aplikasi Laravel yang dapat dijalankan;
-- autentikasi dua role;
-- fitur pelaporan;
-- fitur penanganan;
-- riwayat status;
-- komentar;
-- pencarian dan filter;
-- testing manual;
-- automated test;
+- aplikasi SIPENA yang dapat dijalankan;
+- autentikasi reporter dan developer;
+- master aplikasi internal;
+- CRUD dan workflow tiket;
+- prioritas dan PIC;
+- komentar, history, filter, dashboard, dan lampiran;
+- testing manual dan otomatis;
+- enam simulasi debugging;
+- repository Git dengan branch dan PR yang tertib;
 - dokumentasi teknis;
-- repository Git terstruktur;
-- bahan presentasi.
-
-Proyek harus menunjukkan pemahaman mengenai:
-
-- analisis kebutuhan;
-- struktur aplikasi;
-- basis data;
-- validasi;
-- otorisasi;
-- debugging;
-- testing;
-- dokumentasi;
-- version control;
-- komunikasi teknis.
+- backlog dan log belajar;
+- log dukungan operasional;
+- bukti screenshot;
+- presentasi maksimal tujuh menit.
 
 ---
 
@@ -1640,6 +1226,7 @@ Proyek harus menunjukkan pemahaman mengenai:
 | Versi | Tanggal | Perubahan | Alasan |
 |---|---|---|---|
 | 1.0 | 2026-07-24 | Dokumen awal | Inisialisasi mini project |
-| 1.1 | 2026-07-24 | Mempertahankan fitur autentikasi dan manajemen akun bawaan Laravel Breeze serta menetapkan batas penghapusan akun | Menjaga fitur pendukung yang sudah tersedia tanpa mengorbankan integritas data SIPENA |
+| 1.1 | 2026-07-24 | Mempertahankan fitur autentikasi dan akun Breeze | Menjaga fitur pendukung yang telah tersedia |
+| 1.2 | 2026-07-25 | Menyelaraskan seluruh konsep domain, database, workflow, testing, dan dokumentasi dengan modul latihan | Modul Mini Project Junior Developer KPK menjadi acuan utama pelatihan |
 
-Setiap perubahan requirement wajib dicatat pada bagian ini sebelum implementasi dilakukan.
+Setiap perubahan requirement wajib dicatat sebelum implementasi.
