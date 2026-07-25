@@ -2,7 +2,7 @@
 
 ## Sistem Pelaporan dan Penanganan Kendala Aplikasi
 
-**Versi:** 1.0  
+**Versi:** 1.1
 **Jenis:** Mini Project Pembelajaran Junior Developer  
 **Framework:** Laravel 12  
 **Bahasa antarmuka:** Bahasa Indonesia
@@ -52,6 +52,11 @@ Developer diharapkan mampu:
 
 - Registrasi.
 - Login dan logout.
+- Verifikasi email.
+- Lupa dan reset password.
+- Perubahan password.
+- Pengelolaan profil.
+- Penghapusan akun dalam kondisi yang diizinkan.
 - Role pelapor dan developer.
 - Dashboard pelapor.
 - Dashboard developer.
@@ -79,7 +84,7 @@ AI coding assistant tidak boleh menambahkan fitur berikut tanpa instruksi ekspli
 
 - aplikasi mobile;
 - REST API publik;
-- notifikasi email atau WhatsApp;
+- notifikasi bisnis laporan melalui email atau WhatsApp;
 - integrasi pihak ketiga;
 - real-time chat;
 - WebSocket;
@@ -205,6 +210,20 @@ Developer dapat:
 - menutup laporan yang telah selesai.
 
 Developer tidak memiliki fitur hapus laporan melalui antarmuka utama.
+
+### 6.3 Fitur Akun Bersama
+
+Reporter dan developer dapat:
+
+- memperbarui nama dan email pada profil;
+- mengubah password;
+- meminta reset password;
+- menggunakan verifikasi email bawaan Laravel Breeze;
+- menghapus akun jika belum memiliki relasi dengan data laporan, komentar, atau riwayat status.
+
+Email untuk reset password dan verifikasi email merupakan bagian dari autentikasi bawaan Laravel Breeze, bukan notifikasi bisnis laporan.
+
+Penghapusan akun wajib ditolak dengan pesan yang jelas jika akun telah memiliki laporan, komentar, atau riwayat status. Aturan ini menjaga integritas data dan mengikuti foreign key `restrict`.
 
 ---
 
@@ -398,6 +417,10 @@ Developer kemudian:
 | FR-18 | Laporan resolved dapat ditutup. |
 | FR-19 | Semua input divalidasi pada server. |
 | FR-20 | Daftar laporan menggunakan pagination. |
+| FR-21 | Pengguna dapat memperbarui profil dan password miliknya. |
+| FR-22 | Sistem menyediakan verifikasi email serta lupa dan reset password melalui fitur bawaan Laravel Breeze. |
+| FR-23 | Pengguna dapat menghapus akun jika belum memiliki relasi dengan laporan, komentar, atau riwayat status. |
+| FR-24 | Sistem menolak penghapusan akun yang masih memiliki relasi data dengan pesan yang jelas. |
 
 ---
 
@@ -544,7 +567,12 @@ ReportStatusHistory belongsTo User through changed_by
 - `report_status_histories.report_id`: cascade.
 - `report_status_histories.changed_by`: restrict.
 
-Fitur hapus akun tidak dibuat pada versi awal.
+Fitur hapus akun bawaan Laravel Breeze dipertahankan dengan ketentuan:
+
+- akun dapat dihapus jika belum memiliki laporan, komentar, atau riwayat status;
+- akun yang telah memiliki relasi tersebut tidak dapat dihapus karena foreign key `restrict`;
+- penolakan harus ditangani oleh aplikasi dan menampilkan pesan yang jelas, bukan hanya mengandalkan database exception;
+- data laporan, komentar, dan riwayat status tidak boleh dihapus otomatis ketika akun dihapus.
 
 ---
 
@@ -648,6 +676,33 @@ resources/views/
 ---
 
 ## 19. Routing
+
+### Route Autentikasi dan Akun
+
+Route autentikasi dan akun bawaan Laravel Breeze yang dipertahankan:
+
+```text
+GET    /register
+POST   /register
+GET    /login
+POST   /login
+POST   /logout
+GET    /forgot-password
+POST   /forgot-password
+GET    /reset-password/{token}
+POST   /reset-password
+GET    /verify-email
+GET    /verify-email/{id}/{hash}
+POST   /email/verification-notification
+GET    /confirm-password
+POST   /confirm-password
+PUT    /password
+GET    /profile
+PATCH  /profile
+DELETE /profile
+```
+
+Route profil, perubahan password, verifikasi email, dan logout menggunakan middleware autentikasi sesuai kebutuhan route bawaan Laravel Breeze. Penghapusan akun juga mengikuti batasan relasi data pada bagian 16.
 
 ### Route Pelapor
 
@@ -1095,6 +1150,13 @@ Skenario minimal:
 18. Komentar berhasil ditambahkan.
 19. Riwayat status tercatat.
 20. Reporter menutup laporan resolved.
+21. Pengguna memperbarui profil.
+22. Pengguna mengubah password.
+23. Pengguna meminta reset password.
+24. Pengguna memverifikasi email.
+25. Pengguna tanpa relasi data menghapus akun.
+26. Pengguna dengan relasi laporan tidak dapat menghapus akun.
+27. Password salah menolak penghapusan akun.
 
 Format test case:
 
@@ -1118,6 +1180,10 @@ Test minimal:
 
 ```text
 AuthenticationTest
+EmailVerificationTest
+PasswordResetTest
+PasswordUpdateTest
+ProfileTest
 ReportCreationTest
 ReportAuthorizationTest
 ReportUpdateTest
@@ -1137,7 +1203,11 @@ Cakupan wajib:
 - transisi tidak valid ditolak;
 - resolved membutuhkan solusi;
 - perubahan status membuat riwayat;
-- reporter dapat menutup laporan resolved.
+- reporter dapat menutup laporan resolved;
+- verifikasi dan reset password bekerja;
+- profil dan password dapat diperbarui;
+- akun tanpa relasi data dapat dihapus;
+- akun dengan relasi data tidak dapat dihapus.
 
 ---
 
@@ -1439,6 +1509,10 @@ Proyek selesai jika:
 18. Test utama berhasil.
 19. README tersedia.
 20. Tidak ada fitur di luar scope.
+21. Verifikasi email serta lupa dan reset password bekerja.
+22. Pengguna dapat memperbarui profil dan password.
+23. Pengguna tanpa relasi data dapat menghapus akun.
+24. Penghapusan akun yang memiliki relasi data ditolak tanpa menghapus data terkait.
 
 ---
 
@@ -1566,5 +1640,6 @@ Proyek harus menunjukkan pemahaman mengenai:
 | Versi | Tanggal | Perubahan | Alasan |
 |---|---|---|---|
 | 1.0 | 2026-07-24 | Dokumen awal | Inisialisasi mini project |
+| 1.1 | 2026-07-24 | Mempertahankan fitur autentikasi dan manajemen akun bawaan Laravel Breeze serta menetapkan batas penghapusan akun | Menjaga fitur pendukung yang sudah tersedia tanpa mengorbankan integritas data SIPENA |
 
 Setiap perubahan requirement wajib dicatat pada bagian ini sebelum implementasi dilakukan.
