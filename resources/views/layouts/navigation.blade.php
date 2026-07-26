@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @can('create', \App\Models\Ticket::class)
+                        <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                            Tiket Saya
+                        </x-nav-link>
+                        <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                            Buat Tiket
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -70,6 +79,15 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @can('create', \App\Models\Ticket::class)
+                <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                    Tiket Saya
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                    Buat Tiket
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
