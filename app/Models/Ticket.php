@@ -9,6 +9,7 @@ use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ticket extends Model
@@ -66,5 +67,12 @@ class Ticket extends Model
     public function attachment(): HasOne
     {
         return $this->hasOne(Attachment::class);
+    }
+
+    // Menampilkan riwayat status terbaru terlebih dahulu.
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(TicketStatusHistory::class)
+            ->latest();
     }
 }

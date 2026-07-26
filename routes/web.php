@@ -1,14 +1,22 @@
 <?php
 
+use App\Enums\UserRole;
+use App\Http\Controllers\DeveloperTicketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
+Route::get('/dashboard', function (Request $request) {
+    // Mengarahkan developer ke dashboard operasional khusus.
+    if ($request->user()->role === UserRole::Developer) {
+        return redirect()->route('developer.dashboard');
+    }
+
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -26,7 +34,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    Route::patch('/tickets/{ticket}/confirm', [TicketController::class, 'confirm'])->name('tickets.confirm');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
 });
+
+// Area operasional hanya dapat diakses pengguna dengan role developer.
+Route::prefix('developer')
+    ->name('developer.')
+    ->middleware(['auth', 'developer'])
+    ->group(function (): void {
+        Route::get('/dashboard', [DeveloperTicketController::class, 'dashboard'])
+            ->name('dashboard');
+        Route::get('/tickets', [DeveloperTicketController::class, 'index'])
+            ->name('tickets.index');
+        Route::get('/tickets/{ticket}', [DeveloperTicketController::class, 'show'])
+            ->name('tickets.show');
+        Route::patch(
+            '/tickets/{ticket}/handling',
+            [DeveloperTicketController::class, 'updateHandling'],
+        )->name('tickets.handling');
+        Route::patch(
+            '/tickets/{ticket}/status',
+            [DeveloperTicketController::class, 'updateStatus'],
+        )->name('tickets.status');
+    });
 
 require __DIR__.'/auth.php';

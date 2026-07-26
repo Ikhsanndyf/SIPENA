@@ -24,6 +24,16 @@
                             Buat Tiket
                         </x-nav-link>
                     @endcan
+
+                    {{-- Navigasi operasional khusus developer. --}}
+                    @if (auth()->user()->role === \App\Enums\UserRole::Developer)
+                        <x-nav-link :href="route('developer.dashboard')" :active="request()->routeIs('developer.dashboard')">
+                            Dashboard Developer
+                        </x-nav-link>
+                        <x-nav-link :href="route('developer.tickets.index')" :active="request()->routeIs('developer.tickets.*')">
+                            Kelola Tiket
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -88,6 +98,16 @@
                     Buat Tiket
                 </x-responsive-nav-link>
             @endcan
+
+            {{-- Navigasi responsif khusus developer. --}}
+            @if (auth()->user()->role === \App\Enums\UserRole::Developer)
+                <x-responsive-nav-link :href="route('developer.dashboard')" :active="request()->routeIs('developer.dashboard')">
+                    Dashboard Developer
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('developer.tickets.index')" :active="request()->routeIs('developer.tickets.*')">
+                    Kelola Tiket
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

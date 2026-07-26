@@ -60,4 +60,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class, 'assigned_to');
     }
+
+    // Menyimpan relasi perubahan status yang dilakukan pengguna.
+    public function ticketStatusChanges(): HasMany
+    {
+        return $this->hasMany(TicketStatusHistory::class, 'changed_by');
+    }
 }
