@@ -2,18 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TicketCategory;
 use App\Http\Requests\StoreTicketRequest;
+use App\Models\Application;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use RuntimeException;
 use Throwable;
 
 class TicketController extends Controller
 {
+    public function index(Request $request): View
+    {
+        Gate::authorize('viewAny', Ticket::class);
+
+        // Reporter hanya melihat tiket miliknya, diurutkan dari yang terbaru.
+        $tickets = Ticket::query()
+            ->with('application')
+            ->where('reporter_id', $request->user()->id)
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('tickets.index', compact('tickets'));
+    }
+
+    public function create(): View
+    {
+        Gate::authorize('create', Ticket::class);
+
+        // Menyiapkan pilihan aplikasi dan kategori untuk formulir reporter.
+        $applications = Application::query()
+            ->orderBy('name')
+            ->get();
+
+        return view('tickets.create', [
+            'applications' => $applications,
+            'categories' => TicketCategory::cases(),
+        ]);
+    }
+
     public function store(StoreTicketRequest $request): RedirectResponse
     {
         $storedPath = null;

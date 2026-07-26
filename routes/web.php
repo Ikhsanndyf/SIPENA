@@ -17,6 +17,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Reporter membuat tiket kendala baru.
+    Route::get('/tickets', [TicketController::class, 'index'])
+        ->name('tickets.index');
+    Route::get('/tickets/create', [TicketController::class, 'create'])
+        ->name('tickets.create');
     Route::post('/tickets', [TicketController::class, 'store'])
         ->name('tickets.store');
 });

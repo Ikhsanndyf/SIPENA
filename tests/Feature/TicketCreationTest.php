@@ -17,6 +17,54 @@ class TicketCreationTest extends TestCase
 {
     use RefreshDatabase;
 
+    // Guest harus login sebelum membuka formulir tiket.
+    public function test_guest_is_redirected_to_login_from_ticket_form(): void
+    {
+        $this
+            ->get(route('tickets.create'))
+            ->assertRedirect(route('login'));
+    }
+
+    // Reporter dapat membuka formulir beserta pilihan aplikasi dan kategori.
+    public function test_reporter_can_view_ticket_creation_form(): void
+    {
+        $reporter = User::factory()->create();
+        $applications = Application::factory()
+            ->count(2)
+            ->create();
+
+        $response = $this
+            ->actingAs($reporter)
+            ->get(route('tickets.create'));
+
+        $response
+            ->assertOk()
+            ->assertViewIs('tickets.create')
+            ->assertViewHas('applications', function ($viewApplications) use ($applications): bool {
+                return $applications->pluck('id')->diff($viewApplications->pluck('id'))->isEmpty();
+            })
+            ->assertViewHas('categories', TicketCategory::cases());
+
+        foreach ($applications as $application) {
+            $response->assertSee($application->name);
+        }
+
+        foreach (TicketCategory::cases() as $category) {
+            $response->assertSee('value="'.$category->value.'"', false);
+        }
+    }
+
+    // Developer tidak dapat membuka formulir milik reporter.
+    public function test_developer_cannot_view_ticket_creation_form(): void
+    {
+        $developer = User::factory()->developer()->create();
+
+        $this
+            ->actingAs($developer)
+            ->get(route('tickets.create'))
+            ->assertForbidden();
+    }
+
     // Reporter membuat tiket valid dengan nilai awal dari sistem.
     public function test_reporter_can_create_valid_ticket(): void
     {
