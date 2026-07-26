@@ -58,7 +58,12 @@
                                 @foreach ($tickets as $ticket)
                                     <tr>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                                            {{ $ticket->ticket_number }}
+                                            <a
+                                                href="{{ route('tickets.show', $ticket) }}"
+                                                class="text-indigo-600 hover:text-indigo-800"
+                                            >
+                                                {{ $ticket->ticket_number }}
+                                            </a>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-700">
                                             <div class="font-medium text-gray-900">{{ $ticket->title }}</div>

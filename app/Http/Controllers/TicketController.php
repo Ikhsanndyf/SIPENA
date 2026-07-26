@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TicketCategory;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Application;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
@@ -44,6 +45,38 @@ class TicketController extends Controller
             ->get();
 
         return view('tickets.create', [
+            'applications' => $applications,
+            'categories' => TicketCategory::cases(),
+        ]);
+    }
+
+    public function show(Ticket $ticket): View
+    {
+        Gate::authorize('view', $ticket);
+
+        // Memuat informasi lengkap tiket untuk halaman detail.
+        $ticket->load([
+            'application',
+            'reporter',
+            'assignee',
+            'attachment',
+        ]);
+
+        return view('tickets.show', compact('ticket'));
+    }
+
+    public function edit(Ticket $ticket): View
+    {
+        Gate::authorize('update', $ticket);
+
+        // Menyiapkan data tiket dan pilihan field untuk formulir edit.
+        $ticket->load('attachment');
+        $applications = Application::query()
+            ->orderBy('name')
+            ->get();
+
+        return view('tickets.edit', [
+            'ticket' => $ticket,
             'applications' => $applications,
             'categories' => TicketCategory::cases(),
         ]);
@@ -102,6 +135,99 @@ class TicketController extends Controller
         return redirect()
             ->route('dashboard')
             ->with('success', "Tiket {$ticket->ticket_number} berhasil dibuat.");
+    }
+
+    public function update(UpdateTicketRequest $request, Ticket $ticket): RedirectResponse
+    {
+        $storedPath = null;
+        $oldPath = $ticket->attachment?->file_path;
+
+        try {
+            DB::transaction(function () use ($request, $ticket, &$storedPath): void {
+                // Memperbarui field kendala yang boleh dikelola reporter.
+                $ticket->update(
+                    $request->safe()->except('attachment')
+                );
+
+                // Mengganti file dan metadata jika reporter mengunggah lampiran baru.
+                if ($request->hasFile('attachment')) {
+                    /** @var UploadedFile $file */
+                    $file = $request->file('attachment');
+                    $storedPath = $file->store('attachments', 'public');
+
+                    if ($storedPath === false) {
+                        throw new RuntimeException('Lampiran baru gagal disimpan.');
+                    }
+
+                    $ticket->attachment()->updateOrCreate([], [
+                        'original_name' => $file->getClientOriginalName(),
+                        'file_path' => $storedPath,
+                        'mime_type' => $file->getMimeType() ?? $file->getClientMimeType(),
+                        'file_size' => (int) $file->getSize(),
+                    ]);
+                }
+            });
+        } catch (Throwable $exception) {
+            // Menghapus file baru ketika transaksi pembaruan gagal.
+            if (is_string($storedPath)) {
+                Storage::disk('public')->delete($storedPath);
+            }
+
+            Log::error('Gagal memperbarui tiket.', [
+                'ticket_id' => $ticket->id,
+                'user_id' => $request->user()?->id,
+                'exception' => $exception,
+            ]);
+
+            throw $exception;
+        }
+
+        // Menghapus file lama setelah lampiran baru berhasil dicatat.
+        if (is_string($storedPath) && is_string($oldPath) && $storedPath !== $oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', "Tiket {$ticket->ticket_number} berhasil diperbarui.");
+    }
+
+    public function destroy(Ticket $ticket): RedirectResponse
+    {
+        Gate::authorize('delete', $ticket);
+
+        // Menyimpan informasi tiket dan lampiran sebelum record dihapus.
+        $ticketNumber = $ticket->ticket_number;
+        $attachmentPath = $ticket->attachment?->file_path;
+
+        try {
+            // Menghapus tiket beserta metadata lampiran melalui foreign key cascade.
+            DB::transaction(function () use ($ticket): void {
+                $ticket->delete();
+            });
+        } catch (Throwable $exception) {
+            // Mencatat kegagalan database tanpa menghapus file fisik.
+            Log::error('Gagal menghapus tiket.', [
+                'ticket_id' => $ticket->id,
+                'user_id' => request()->user()?->id,
+                'exception' => $exception,
+            ]);
+
+            throw $exception;
+        }
+
+        // Menghapus file fisik setelah transaksi database berhasil.
+        if (is_string($attachmentPath)
+            && ! Storage::disk('public')->delete($attachmentPath)) {
+            Log::warning('File lampiran tiket gagal dihapus.', [
+                'ticket_number' => $ticketNumber,
+                'file_path' => $attachmentPath,
+            ]);
+        }
+
+        return redirect()
+            ->route('tickets.index')
+            ->with('success', "Tiket {$ticketNumber} berhasil dihapus.");
     }
 
     private function generateTicketNumber(Ticket $ticket): string

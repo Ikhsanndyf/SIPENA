@@ -42,6 +42,12 @@ class Ticket extends Model
         ];
     }
 
+    // Menggunakan nomor tiket sebagai identitas pada URL.
+    public function getRouteKeyName(): string
+    {
+        return 'ticket_number';
+    }
+
     public function reporter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reporter_id');
