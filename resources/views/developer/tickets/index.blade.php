@@ -12,98 +12,11 @@
 
     <div class="py-10">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            {{-- Filter tiket developer dengan query string yang tetap saat pagination. --}}
-            <form
-                method="GET"
-                action="{{ route('developer.tickets.index') }}"
-                class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-            >
-                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    <div class="md:col-span-2">
-                        <x-input-label for="search" value="Pencarian" />
-                        <x-text-input
-                            id="search"
-                            name="search"
-                            type="search"
-                            class="mt-1 block w-full"
-                            :value="request('search')"
-                            placeholder="Nomor tiket, judul, atau reporter"
-                        />
-                    </div>
-
-                    <div>
-                        <x-input-label for="status" value="Status" />
-                        <select id="status" name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Semua status</option>
-                            @foreach ($statuses as $status)
-                                <option value="{{ $status->value }}" @selected(request('status') === $status->value)>
-                                    {{ ucwords(str_replace('_', ' ', $status->value)) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <x-input-label for="priority" value="Prioritas" />
-                        <select id="priority" name="priority" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Semua prioritas</option>
-                            @foreach ($priorities as $priority)
-                                <option value="{{ $priority->value }}" @selected(request('priority') === $priority->value)>
-                                    {{ ucfirst($priority->value) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <x-input-label for="application_id" value="Aplikasi" />
-                        <select id="application_id" name="application_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Semua aplikasi</option>
-                            @foreach ($applications as $application)
-                                <option value="{{ $application->id }}" @selected((string) request('application_id') === (string) $application->id)>
-                                    {{ $application->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <x-input-label for="category" value="Kategori" />
-                        <select id="category" name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Semua kategori</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->value }}" @selected(request('category') === $category->value)>
-                                    {{ ucfirst($category->value) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <x-input-label for="assigned_to" value="PIC Developer" />
-                        <select id="assigned_to" name="assigned_to" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Semua PIC</option>
-                            <option value="unassigned" @selected(request('assigned_to') === 'unassigned')>Belum ada PIC</option>
-                            @foreach ($developers as $developer)
-                                <option value="{{ $developer->id }}" @selected((string) request('assigned_to') === (string) $developer->id)>
-                                    {{ $developer->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- Aksi untuk menerapkan atau membersihkan filter. --}}
-                    <div class="flex items-end gap-3">
-                        <x-primary-button type="submit">Terapkan</x-primary-button>
-                        <a
-                            href="{{ route('developer.tickets.index') }}"
-                            class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Reset
-                        </a>
-                    </div>
-                </div>
-            </form>
+            {{-- Filter reusable menjaga perilaku reporter dan developer konsisten. --}}
+            @include('tickets.partials.filters', [
+                'filterAction' => route('developer.tickets.index'),
+                'resetUrl' => route('developer.tickets.index'),
+            ])
 
             {{-- Tabel seluruh tiket dengan relasi yang sudah di-eager load. --}}
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">

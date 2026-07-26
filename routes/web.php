@@ -3,6 +3,7 @@
 use App\Enums\UserRole;
 use App\Http\Controllers\DeveloperTicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
     Route::patch('/tickets/{ticket}/confirm', [TicketController::class, 'confirm'])->name('tickets.confirm');
+    Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('tickets.comments.store');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
 });
 
@@ -57,6 +59,10 @@ Route::prefix('developer')
             '/tickets/{ticket}/status',
             [DeveloperTicketController::class, 'updateStatus'],
         )->name('tickets.status');
+        Route::post(
+            '/tickets/{ticket}/comments',
+            [TicketCommentController::class, 'store'],
+        )->name('tickets.comments.store');
     });
 
 require __DIR__.'/auth.php';
