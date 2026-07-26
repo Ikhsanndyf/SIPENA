@@ -66,4 +66,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(TicketStatusHistory::class, 'changed_by');
     }
+
+    // Menghubungkan pengguna dengan komentar tiket yang dikirimnya.
+    public function ticketComments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class);
+    }
 }

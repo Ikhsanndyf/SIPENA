@@ -7,6 +7,7 @@ use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Enums\UserRole;
 use App\Exceptions\InvalidTicketStatusTransition;
+use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\UpdateTicketHandlingRequest;
 use App\Http\Requests\UpdateTicketStatusRequest;
 use App\Models\Application;
@@ -15,7 +16,6 @@ use App\Models\User;
 use App\Services\TicketStatusService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
@@ -81,23 +81,11 @@ class DeveloperTicketController extends Controller
         ));
     }
 
-    public function index(Request $request): View
+    public function index(TicketFilterRequest $request): View
     {
         Gate::authorize('viewAny', Ticket::class);
 
-        // Menormalisasi filter agar hanya nilai domain yang diterapkan.
-        $search = trim($request->string('search')->toString());
-        $status = TicketStatus::tryFrom(
-            $request->string('status')->toString()
-        );
-        $priority = TicketPriority::tryFrom(
-            $request->string('priority')->toString()
-        );
-        $category = TicketCategory::tryFrom(
-            $request->string('category')->toString()
-        );
-
-        // Memuat relasi tabel lebih awal untuk mencegah N+1 query.
+        // Memuat relasi tabel dan menerapkan scope filter reusable.
         $tickets = Ticket::query()
             ->select([
                 'id',
@@ -116,38 +104,7 @@ class DeveloperTicketController extends Controller
                 'reporter:id,name',
                 'assignee:id,name',
             ])
-            ->when($search !== '', function ($query) use ($search): void {
-                // Mengelompokkan pencarian nomor, judul, dan reporter.
-                $query->where(function ($query) use ($search): void {
-                    $query
-                        ->where('ticket_number', 'like', "%{$search}%")
-                        ->orWhere('title', 'like', "%{$search}%")
-                        ->orWhereHas('reporter', function ($query) use ($search): void {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-                });
-            })
-            ->when($status, fn ($query) => $query->where('status', $status->value))
-            ->when($priority, fn ($query) => $query->where('priority', $priority->value))
-            ->when($category, fn ($query) => $query->where('category', $category->value))
-            ->when(
-                $request->integer('application_id') > 0,
-                fn ($query) => $query->where(
-                    'application_id',
-                    $request->integer('application_id'),
-                ),
-            )
-            ->when(
-                $request->string('assigned_to')->toString() === 'unassigned',
-                fn ($query) => $query->whereNull('assigned_to'),
-            )
-            ->when(
-                $request->integer('assigned_to') > 0,
-                fn ($query) => $query->where(
-                    'assigned_to',
-                    $request->integer('assigned_to'),
-                ),
-            )
+            ->filter($request->validated())
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -184,8 +141,16 @@ class DeveloperTicketController extends Controller
             'statusHistories.changedBy:id,name',
         ]);
 
+        // Percakapan dipaginasi terpisah dari data detail tiket.
+        $comments = $ticket->comments()
+            ->with('user:id,name,role')
+            ->oldest()
+            ->paginate(10, ['*'], 'comments_page')
+            ->withQueryString();
+
         return view('developer.tickets.show', [
             'ticket' => $ticket,
+            'comments' => $comments,
             'developers' => $this->developers(),
             'priorities' => TicketPriority::cases(),
             'allowedTransitions' => $statusService

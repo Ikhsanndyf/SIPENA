@@ -160,6 +160,11 @@
                     </div>
                 </div>
             @endif
+
+            {{-- Diskusi reporter dan developer pada tiket yang sama. --}}
+            @include('tickets.partials.comments', [
+                'commentAction' => route('tickets.comments.store', $ticket),
+            ])
         </div>
     </div>
 </x-app-layout>

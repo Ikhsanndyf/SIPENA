@@ -138,6 +138,11 @@
                             @endforelse
                         </div>
                     </section>
+
+                    {{-- Diskusi developer dan reporter pada tiket yang sama. --}}
+                    @include('tickets.partials.comments', [
+                        'commentAction' => route('developer.tickets.comments.store', $ticket),
+                    ])
                 </div>
 
                 {{-- Kontrol penanganan developer berada pada panel samping. --}}

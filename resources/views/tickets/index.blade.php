@@ -17,28 +17,47 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
             {{-- Menampilkan notifikasi setelah proses tiket berhasil. --}}
             @if (session('success'))
-                <div class="mb-6 rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+                <div class="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
                     {{ session('success') }}
                 </div>
             @endif
 
+            {{-- Reporter memakai filter yang sama dengan area developer. --}}
+            @include('tickets.partials.filters', [
+                'filterAction' => route('tickets.index'),
+                'resetUrl' => route('tickets.index'),
+            ])
+
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 @if ($tickets->isEmpty())
-                    {{-- Kondisi ketika reporter belum memiliki tiket. --}}
+                    {{-- Membedakan data kosong dengan hasil filter kosong. --}}
                     <div class="p-8 text-center">
-                        <h3 class="text-lg font-semibold text-gray-800">Belum ada tiket</h3>
-                        <p class="mt-2 text-sm text-gray-600">
-                            Laporkan kendala aplikasi agar dapat ditangani oleh developer.
-                        </p>
-                        <a
-                            href="{{ route('tickets.create') }}"
-                            class="mt-5 inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Buat Tiket Pertama
-                        </a>
+                        @if (request()->hasAny(['search', 'application_id', 'status', 'priority', 'category', 'assigned_to', 'date_from', 'date_to']))
+                            <h3 class="text-lg font-semibold text-gray-800">Tiket tidak ditemukan</h3>
+                            <p class="mt-2 text-sm text-gray-600">
+                                Ubah atau reset filter untuk melihat tiket lainnya.
+                            </p>
+                            <a
+                                href="{{ route('tickets.index') }}"
+                                class="mt-5 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                Reset Filter
+                            </a>
+                        @else
+                            <h3 class="text-lg font-semibold text-gray-800">Belum ada tiket</h3>
+                            <p class="mt-2 text-sm text-gray-600">
+                                Laporkan kendala aplikasi agar dapat ditangani oleh developer.
+                            </p>
+                            <a
+                                href="{{ route('tickets.create') }}"
+                                class="mt-5 inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                Buat Tiket Pertama
+                            </a>
+                        @endif
                     </div>
                 @else
                     {{-- Ringkasan jumlah data pada tabel tiket reporter. --}}
@@ -60,6 +79,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Nomor</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Kendala</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Aplikasi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">PIC</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Prioritas</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Dibuat</th>
@@ -87,30 +107,15 @@
                                             {{ $ticket->application->name }}
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+                                            {{ $ticket->assignee?->name ?? 'Belum ditentukan' }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                                             {{-- Badge prioritas memudahkan identifikasi urgensi. --}}
-                                            <span @class([
-                                                'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold',
-                                                'bg-gray-100 text-gray-700' => $ticket->priority->value === 'low',
-                                                'bg-blue-100 text-blue-700' => $ticket->priority->value === 'medium',
-                                                'bg-orange-100 text-orange-700' => $ticket->priority->value === 'high',
-                                                'bg-red-100 text-red-700' => $ticket->priority->value === 'critical',
-                                            ])>
-                                                {{ ucfirst($ticket->priority->value) }}
-                                            </span>
+                                            <x-ticket-priority-badge :priority="$ticket->priority" />
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                                             {{-- Badge status menunjukkan posisi tiket pada workflow. --}}
-                                            <span @class([
-                                                'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold',
-                                                'bg-gray-100 text-gray-700' => $ticket->status->value === 'new',
-                                                'bg-blue-100 text-blue-700' => $ticket->status->value === 'analyzed',
-                                                'bg-amber-100 text-amber-700' => $ticket->status->value === 'in_progress',
-                                                'bg-purple-100 text-purple-700' => $ticket->status->value === 'waiting_confirmation',
-                                                'bg-green-100 text-green-700' => $ticket->status->value === 'resolved',
-                                                'bg-red-100 text-red-700' => $ticket->status->value === 'rejected',
-                                            ])>
-                                                {{ ucwords(str_replace('_', ' ', $ticket->status->value)) }}
-                                            </span>
+                                            <x-ticket-status-badge :status="$ticket->status" />
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                             <div>{{ $ticket->created_at->format('d M Y') }}</div>

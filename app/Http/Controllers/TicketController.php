@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TicketCategory;
+use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Enums\UserRole;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Application;
 use App\Models\Ticket;
@@ -23,19 +26,53 @@ use Throwable;
 
 class TicketController extends Controller
 {
-    public function index(Request $request): View
+    public function index(TicketFilterRequest $request): View
     {
         Gate::authorize('viewAny', Ticket::class);
 
-        // Reporter hanya melihat tiket miliknya, diurutkan dari yang terbaru.
+        // Reporter hanya melihat tiket miliknya dengan filter yang tervalidasi.
         $tickets = Ticket::query()
-            ->with('application')
+            ->select([
+                'id',
+                'ticket_number',
+                'reporter_id',
+                'application_id',
+                'assigned_to',
+                'title',
+                'category',
+                'priority',
+                'status',
+                'created_at',
+            ])
+            ->with([
+                'application:id,name',
+                'assignee:id,name',
+            ])
             ->where('reporter_id', $request->user()->id)
+            ->filter($request->validated())
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('tickets.index', compact('tickets'));
+        // Mengambil pilihan filter dengan kolom minimum yang dibutuhkan.
+        $applications = Application::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
+        $developers = User::query()
+            ->select(['id', 'name'])
+            ->where('role', UserRole::Developer->value)
+            ->orderBy('name')
+            ->get();
+
+        return view('tickets.index', [
+            'tickets' => $tickets,
+            'applications' => $applications,
+            'developers' => $developers,
+            'statuses' => TicketStatus::cases(),
+            'priorities' => TicketPriority::cases(),
+            'categories' => TicketCategory::cases(),
+        ]);
     }
 
     public function create(): View
@@ -65,7 +102,14 @@ class TicketController extends Controller
             'attachment',
         ]);
 
-        return view('tickets.show', compact('ticket'));
+        // Komentar dipaginasi dan author di-eager load agar query tetap stabil.
+        $comments = $ticket->comments()
+            ->with('user:id,name,role')
+            ->oldest()
+            ->paginate(10, ['*'], 'comments_page')
+            ->withQueryString();
+
+        return view('tickets.show', compact('ticket', 'comments'));
     }
 
     public function edit(Ticket $ticket): View
