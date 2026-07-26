@@ -38,7 +38,9 @@ class TicketDetailTest extends TestCase
             ->assertViewHas('ticket', fn (Ticket $viewTicket): bool => $viewTicket->is($ticket))
             ->assertSee($ticket->ticket_number)
             ->assertSee($ticket->title)
-            ->assertSee($ticket->application->name);
+            ->assertSee($ticket->application->name)
+            ->assertDontSee('Edit Tiket')
+            ->assertDontSee('Hapus Tiket');
     }
 
     // Reporter tidak dapat melihat tiket reporter lain.

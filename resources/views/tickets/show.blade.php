@@ -10,39 +10,13 @@
                 </p>
             </div>
 
-            {{-- Aksi tiket yang tersedia sesuai Policy. --}}
-            <div class="flex items-center gap-4">
-                @can('update', $ticket)
-                    <a
-                        href="{{ route('tickets.edit', $ticket) }}"
-                        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Edit Tiket
-                    </a>
-                @endcan
-
-                @can('delete', $ticket)
-                    <form
-                        method="POST"
-                        action="{{ route('tickets.destroy', $ticket) }}"
-                        onsubmit="return confirm('Hapus tiket {{ $ticket->ticket_number }}? Tindakan ini tidak dapat dibatalkan.')"
-                    >
-                        @csrf
-                        @method('DELETE')
-
-                        <x-danger-button type="submit">
-                            Hapus Tiket
-                        </x-danger-button>
-                    </form>
-                @endcan
-
-                <a
-                    href="{{ route('tickets.index') }}"
-                    class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
-                >
-                    Kembali ke Daftar
-                </a>
-            </div>
+            {{-- Navigasi kembali ke tabel tiket. --}}
+            <a
+                href="{{ route('tickets.index') }}"
+                class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+                Kembali ke Daftar
+            </a>
         </div>
     </x-slot>
 

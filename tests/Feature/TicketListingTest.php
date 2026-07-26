@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\TicketStatus;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -79,5 +80,28 @@ class TicketListingTest extends TestCase
         $this->assertCount(10, $tickets->items());
         $this->assertSame(11, $tickets->total());
         $this->assertSame($expectedTimestamps, $actualTimestamps);
+    }
+
+    // Aksi edit dan hapus hanya tampil untuk tiket new milik reporter.
+    public function test_table_displays_actions_according_to_ticket_policy(): void
+    {
+        $reporter = User::factory()->create();
+        $newTicket = Ticket::factory()
+            ->for($reporter, 'reporter')
+            ->create(['status' => TicketStatus::New]);
+        $processedTicket = Ticket::factory()
+            ->for($reporter, 'reporter')
+            ->create(['status' => TicketStatus::InProgress]);
+
+        $this
+            ->actingAs($reporter)
+            ->get(route('tickets.index'))
+            ->assertOk()
+            ->assertSee(route('tickets.show', $newTicket))
+            ->assertSee(route('tickets.edit', $newTicket))
+            ->assertSee('action="'.route('tickets.destroy', $newTicket).'"', false)
+            ->assertSee(route('tickets.show', $processedTicket))
+            ->assertDontSee(route('tickets.edit', $processedTicket))
+            ->assertDontSee('action="'.route('tickets.destroy', $processedTicket).'"', false);
     }
 }
