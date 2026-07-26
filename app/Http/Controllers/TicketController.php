@@ -49,6 +49,21 @@ class TicketController extends Controller
         ]);
     }
 
+    public function show(Ticket $ticket): View
+    {
+        Gate::authorize('view', $ticket);
+
+        // Memuat informasi lengkap tiket untuk halaman detail.
+        $ticket->load([
+            'application',
+            'reporter',
+            'assignee',
+            'attachment',
+        ]);
+
+        return view('tickets.show', compact('ticket'));
+    }
+
     public function store(StoreTicketRequest $request): RedirectResponse
     {
         $storedPath = null;
