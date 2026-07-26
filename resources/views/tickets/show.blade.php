@@ -10,17 +10,51 @@
                 </p>
             </div>
 
-            <a
-                href="{{ route('tickets.index') }}"
-                class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
-            >
-                Kembali ke Daftar
-            </a>
+            {{-- Aksi tiket yang tersedia sesuai Policy. --}}
+            <div class="flex items-center gap-4">
+                @can('update', $ticket)
+                    <a
+                        href="{{ route('tickets.edit', $ticket) }}"
+                        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Edit Tiket
+                    </a>
+                @endcan
+
+                @can('delete', $ticket)
+                    <form
+                        method="POST"
+                        action="{{ route('tickets.destroy', $ticket) }}"
+                        onsubmit="return confirm('Hapus tiket {{ $ticket->ticket_number }}? Tindakan ini tidak dapat dibatalkan.')"
+                    >
+                        @csrf
+                        @method('DELETE')
+
+                        <x-danger-button type="submit">
+                            Hapus Tiket
+                        </x-danger-button>
+                    </form>
+                @endcan
+
+                <a
+                    href="{{ route('tickets.index') }}"
+                    class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                >
+                    Kembali ke Daftar
+                </a>
+            </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="mx-auto max-w-5xl space-y-6 sm:px-6 lg:px-8">
+            {{-- Menampilkan notifikasi setelah tiket diperbarui. --}}
+            @if (session('success'))
+                <div class="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Informasi utama tiket. --}}
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6">
