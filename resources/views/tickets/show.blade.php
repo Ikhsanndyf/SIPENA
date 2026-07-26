@@ -22,13 +22,6 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-5xl space-y-6 sm:px-6 lg:px-8">
-            {{-- Menampilkan notifikasi setelah tiket diperbarui. --}}
-            @if (session('success'))
-                <div class="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             {{-- Informasi utama tiket. --}}
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6">
@@ -132,7 +125,10 @@
                         method="POST"
                         action="{{ route('tickets.confirm', $ticket) }}"
                         class="mt-4"
-                        onsubmit="return confirm('Konfirmasikan tiket ini sebagai selesai?')"
+                        data-confirm="Pastikan Anda sudah menguji solusi developer. Tiket yang selesai tidak dapat dibuka kembali."
+                        data-confirm-title="Konfirmasi penyelesaian tiket?"
+                        data-confirm-button="Ya, tiket selesai"
+                        data-confirm-icon="question"
                     >
                         @csrf
                         @method('PATCH')

@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TicketStatusService
 {
@@ -95,7 +96,7 @@ class TicketStatusService
         TicketStatus $target,
         ?string $notes,
     ): Ticket {
-        DB::transaction(function () use ($ticket, $actor, $target, $notes): void {
+        $previousStatus = DB::transaction(function () use ($ticket, $actor, $target, $notes): TicketStatus {
             // Mengunci record agar dua perubahan status tidak diproses bersamaan.
             $lockedTicket = Ticket::query()
                 ->lockForUpdate()
@@ -108,6 +109,14 @@ class TicketStatusService
                 self::TRANSITIONS[$current->value],
                 true,
             )) {
+                // Mencatat percobaan transisi tidak wajar tanpa menyimpan data sensitif.
+                Log::warning('Transisi status tiket ditolak.', [
+                    'ticket_id' => $lockedTicket->id,
+                    'actor_id' => $actor->id,
+                    'from_status' => $current->value,
+                    'to_status' => $target->value,
+                ]);
+
                 throw new InvalidTicketStatusTransition(
                     "Transisi dari {$current->value} ke {$target->value} tidak diizinkan."
                 );
@@ -116,6 +125,12 @@ class TicketStatusService
             // Solusi wajib tersedia sebelum meminta konfirmasi reporter.
             if ($target === TicketStatus::WaitingConfirmation
                 && blank($lockedTicket->resolution_notes)) {
+                Log::warning('Transisi tiket tanpa catatan solusi ditolak.', [
+                    'ticket_id' => $lockedTicket->id,
+                    'actor_id' => $actor->id,
+                    'to_status' => $target->value,
+                ]);
+
                 throw new InvalidTicketStatusTransition(
                     'Catatan solusi wajib diisi sebelum menunggu konfirmasi.'
                 );
@@ -136,7 +151,18 @@ class TicketStatusService
                 'to_status' => $target,
                 'notes' => filled($notes) ? trim((string) $notes) : null,
             ]);
+
+            return $current;
         });
+
+        // Audit keberhasilan dicatat setelah transaksi benar-benar selesai.
+        Log::info('Status tiket berhasil diperbarui.', [
+            'ticket_id' => $ticket->id,
+            'ticket_number' => $ticket->ticket_number,
+            'actor_id' => $actor->id,
+            'from_status' => $previousStatus->value,
+            'to_status' => $target->value,
+        ]);
 
         return $ticket->refresh();
     }

@@ -1,11 +1,24 @@
+@php
+    // Layout sidebar dipakai developer, sedangkan reporter tetap memakai filter horizontal.
+    $isSidebar = ($layout ?? 'horizontal') === 'sidebar';
+@endphp
+
 <form
     method="GET"
     action="{{ $filterAction }}"
-    class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+    @class([
+        'rounded-xl border border-gray-200 bg-white shadow-sm',
+        'p-4' => $isSidebar,
+        'p-5' => ! $isSidebar,
+    ])
 >
     {{-- Pencarian utama berdasarkan nomor, judul, atau reporter. --}}
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="md:col-span-2">
+    <div @class([
+        'grid gap-4',
+        'grid-cols-1' => $isSidebar,
+        'md:grid-cols-2 xl:grid-cols-4' => ! $isSidebar,
+    ])>
+        <div @class(['md:col-span-2' => ! $isSidebar])>
             <x-input-label for="search" value="Pencarian" />
             <x-text-input
                 id="search"
@@ -112,13 +125,22 @@
     </div>
 
     {{-- Aksi untuk menerapkan atau membersihkan seluruh filter. --}}
-    <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-gray-100 pt-5">
+    <div @class([
+        'mt-5 flex gap-3 border-t border-gray-100 pt-5',
+        'flex-col-reverse' => $isSidebar,
+        'flex-wrap items-center justify-end' => ! $isSidebar,
+    ])>
         <a
             href="{{ $resetUrl }}"
-            class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            @class([
+                'inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+                'w-full' => $isSidebar,
+            ])
         >
             Reset
         </a>
-        <x-primary-button type="submit">Terapkan Filter</x-primary-button>
+        <x-primary-button type="submit" @class(['w-full justify-center' => $isSidebar])>
+            Terapkan Filter
+        </x-primary-button>
     </div>
 </form>

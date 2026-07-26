@@ -23,13 +23,6 @@
 
     <div class="py-10">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            {{-- Notifikasi hasil pembaruan developer. --}}
-            @if (session('success'))
-                <div class="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <div class="grid gap-6 xl:grid-cols-3">
                 {{-- Informasi laporan dan riwayat berada pada kolom utama. --}}
                 <div class="space-y-6 xl:col-span-2">

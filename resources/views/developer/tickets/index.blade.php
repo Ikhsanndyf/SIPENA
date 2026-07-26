@@ -11,15 +11,24 @@
     </x-slot>
 
     <div class="py-10">
-        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            {{-- Filter reusable menjaga perilaku reporter dan developer konsisten. --}}
-            @include('tickets.partials.filters', [
-                'filterAction' => route('developer.tickets.index'),
-                'resetUrl' => route('developer.tickets.index'),
-            ])
+        <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+            <div class="grid items-start gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">
+                {{-- Filter tetap terlihat di sisi kiri ketika halaman desktop digulir. --}}
+                <aside class="xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto">
+                    <div class="mb-3">
+                        <h3 class="font-semibold text-slate-900">Filter Tiket</h3>
+                        <p class="mt-1 text-sm text-slate-500">Persempit antrean berdasarkan kebutuhan.</p>
+                    </div>
 
-            {{-- Tabel seluruh tiket dengan relasi yang sudah di-eager load. --}}
-            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    @include('tickets.partials.filters', [
+                        'filterAction' => route('developer.tickets.index'),
+                        'resetUrl' => route('developer.tickets.index'),
+                        'layout' => 'sidebar',
+                    ])
+                </aside>
+
+                {{-- Tabel seluruh tiket memakai sisa lebar layar dan dapat digulir horizontal. --}}
+                <section class="min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                 <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
                     <div>
                         <h3 class="font-semibold text-gray-900">Daftar Tiket</h3>
@@ -86,6 +95,7 @@
                         {{ $tickets->links() }}
                     </div>
                 @endif
+                </section>
             </div>
         </div>
     </div>

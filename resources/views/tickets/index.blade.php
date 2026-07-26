@@ -18,13 +18,6 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            {{-- Menampilkan notifikasi setelah proses tiket berhasil. --}}
-            @if (session('success'))
-                <div class="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             {{-- Reporter memakai filter yang sama dengan area developer. --}}
             @include('tickets.partials.filters', [
                 'filterAction' => route('tickets.index'),
@@ -146,7 +139,11 @@
                                                     <form
                                                         method="POST"
                                                         action="{{ route('tickets.destroy', $ticket) }}"
-                                                        onsubmit="return confirm('Hapus tiket {{ $ticket->ticket_number }}? Tindakan ini tidak dapat dibatalkan.')"
+                                                        data-confirm="Tiket {{ $ticket->ticket_number }} akan dihapus permanen dan tindakan ini tidak dapat dibatalkan."
+                                                        data-confirm-title="Hapus tiket?"
+                                                        data-confirm-button="Ya, hapus"
+                                                        data-confirm-color="#dc2626"
+                                                        data-confirm-icon="warning"
                                                     >
                                                         @csrf
                                                         @method('DELETE')
