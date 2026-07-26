@@ -99,6 +99,51 @@
                 </div>
             </div>
 
+            {{-- Hasil penanganan yang telah ditulis developer. --}}
+            @if ($ticket->analysis_notes || $ticket->resolution_notes)
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="space-y-6 p-6">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Analisis Developer</h3>
+                            <p class="mt-2 whitespace-pre-line text-gray-900">
+                                {{ $ticket->analysis_notes ?: 'Analisis belum dicantumkan.' }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">Solusi Developer</h3>
+                            <p class="mt-2 whitespace-pre-line text-gray-900">
+                                {{ $ticket->resolution_notes ?: 'Solusi belum dicantumkan.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Konfirmasi akhir hanya tersedia bagi reporter pemilik. --}}
+            @can('confirm', $ticket)
+                <div class="rounded-lg border border-green-200 bg-green-50 p-6">
+                    <h3 class="font-semibold text-green-900">Konfirmasi Penyelesaian</h3>
+                    <p class="mt-2 text-sm text-green-700">
+                        Periksa solusi developer. Konfirmasikan jika kendala sudah benar-benar selesai.
+                    </p>
+
+                    <form
+                        method="POST"
+                        action="{{ route('tickets.confirm', $ticket) }}"
+                        class="mt-4"
+                        onsubmit="return confirm('Konfirmasikan tiket ini sebagai selesai?')"
+                    >
+                        @csrf
+                        @method('PATCH')
+
+                        <x-primary-button type="submit">
+                            Konfirmasi Selesai
+                        </x-primary-button>
+                    </form>
+                </div>
+            @endcan
+
             {{-- Lampiran bukti kendala. --}}
             @if ($ticket->attachment)
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">

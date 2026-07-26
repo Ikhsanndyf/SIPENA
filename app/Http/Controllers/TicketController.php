@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TicketCategory;
+use App\Enums\TicketStatus;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Application;
 use App\Models\Ticket;
+use App\Models\User;
+use App\Services\TicketStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -96,6 +99,14 @@ class TicketController extends Controller
                 // Membentuk nomor tiket setelah ID tiket tersedia.
                 $ticket->update([
                     'ticket_number' => $this->generateTicketNumber($ticket),
+                ]);
+
+                // Mencatat status awal sebagai titik mulai workflow tiket.
+                $ticket->statusHistories()->create([
+                    'changed_by' => $request->user()->id,
+                    'from_status' => null,
+                    'to_status' => TicketStatus::New,
+                    'notes' => 'Tiket dibuat oleh reporter.',
                 ]);
 
                 // Menyimpan file dan metadata lampiran opsional.
@@ -228,6 +239,23 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.index')
             ->with('success', "Tiket {$ticketNumber} berhasil dihapus.");
+    }
+
+    public function confirm(
+        Request $request,
+        Ticket $ticket,
+        TicketStatusService $statusService,
+    ): RedirectResponse {
+        Gate::authorize('confirm', $ticket);
+
+        // Reporter pemilik menyelesaikan workflow setelah memeriksa solusi.
+        /** @var User $reporter */
+        $reporter = $request->user();
+        $statusService->confirmByReporter($ticket, $reporter);
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', "Tiket {$ticket->ticket_number} berhasil dikonfirmasi selesai.");
     }
 
     private function generateTicketNumber(Ticket $ticket): string

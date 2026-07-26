@@ -91,6 +91,12 @@ class TicketCreationTest extends TestCase
         $this->assertSame(TicketStatus::New, $ticket->status);
         $this->assertSame(TicketPriority::Medium, $ticket->priority);
         $this->assertNull($ticket->assigned_to);
+
+        // Pembuatan tiket harus menghasilkan satu riwayat status awal.
+        $history = $ticket->statusHistories()->sole();
+        $this->assertNull($history->from_status);
+        $this->assertSame(TicketStatus::New, $history->to_status);
+        $this->assertSame($reporter->id, $history->changed_by);
     }
 
     // Reporter membuat tiket dengan satu lampiran gambar.
